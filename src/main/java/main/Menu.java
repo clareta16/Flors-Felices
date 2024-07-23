@@ -3,17 +3,22 @@ package main;
 import factories.*;
 import models.*;
 import connexio.*;
+import excepcions.ProducteNoTrobatBDD;
 
 import java.util.Scanner;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class Menu {
     private MySqlConnexio connexio;
     Scanner scanner = new Scanner(System.in);
-        String opcionsMenu = "Tria una opció\n" +
-		        "1. Crear floristeria\n" +
-                "2. Afegir Producte\n" +
-                "3. Retirar Producte\n" +
-                "...";
+    String opcionsMenu = "Tria una opció\n" +
+            "1. Crear floristeria\n" +
+            "2. Afegir Producte\n" +
+            "3. Retirar Producte\n" +
+            "...";
+
     String opcionsTipusProducte = "Quin és el tipus del producte?\n" +
             "1. Arbre\n" +
             "2. Flor\n" +
@@ -27,12 +32,13 @@ public class Menu {
         System.out.println("Benvingut/da al gestor de Floristeries");
         System.out.println(opcionsMenu);
         int opcio = scanner.nextInt();
+        scanner.nextLine(); // Afegit per consumir la nova línia
         switch (opcio) {
             case 1:
-//                crearFloristeria();
+                // crearFloristeria();
                 break;
             case 2:
-                //Afegir Producte
+                // Afegir Producte
                 int tipusAfegir = menuTipusProducte();
                 Object objecteAfegir = crearProducte(tipusAfegir);
                 String sqlAfegir = generarSQLAfegirProducte(tipusAfegir, objecteAfegir);
@@ -40,12 +46,16 @@ public class Menu {
                 System.out.println("Producte afegit amb èxit");
                 break;
             case 3:
-                //Retirar Producte
+                // Retirar Producte
                 int tipusRetirar = menuTipusProducte();
-                System.out.println("Quin és el nom del producte a retirar:");
+                System.out.println("Quin és el nom del producte a retirar?");
                 String nom = scanner.nextLine();
-                String sqlRetirar = generarSQLRetirarProducte(tipusRetirar, nom);
-                connexio.executarSQL(sqlRetirar);
+                try {
+                    retirarProducte(tipusRetirar, nom);
+                    System.out.println("Producte retirat correctament.");
+                } catch (ProducteNoTrobatBDD e) {
+                    System.out.println(e.getMessage());
+                }
                 break;
             default:
                 System.out.println("Tornar a escollir, opció no vàlida");
@@ -83,6 +93,7 @@ public class Menu {
                 double alcadaCm = scanner.nextDouble();
                 System.out.println("Quin és el preu?");
                 double preuArbre = scanner.nextDouble();
+                scanner.nextLine(); // Afegit per consumir la nova línia
                 ArbreFactory arbreFactory = new ArbreFactory();
                 Arbre arbre = (Arbre) arbreFactory.crearProducte(nomArbre, alcadaCm, preuArbre);
                 objecte = arbre;
@@ -95,6 +106,7 @@ public class Menu {
                 String color = scanner.nextLine();
                 System.out.println("Quin és el preu?");
                 double preuFlor = scanner.nextDouble();
+                scanner.nextLine(); // Afegit per consumir la nova línia
                 FlorFactory florFactory = new FlorFactory();
                 Flor flor = (Flor) florFactory.crearProducte(nomFlor, color, preuFlor);
                 objecte = flor;
@@ -104,9 +116,10 @@ public class Menu {
                 System.out.println("Quin és el nom de la decoració?");
                 String nomDecoracio = scanner.nextLine();
                 System.out.println("De quin material és?");
-                String material = scanner.nextLine(); //Enum
+                String material = scanner.nextLine(); // Enum
                 System.out.println("Quin és el preu?");
                 double preuDecoracio = scanner.nextDouble();
+                scanner.nextLine(); // Afegit per consumir la nova línia
                 DecoracioFactory decoracioFactory = new DecoracioFactory();
                 Decoracio decoracio = (Decoracio) decoracioFactory.crearProducte(nomDecoracio, material, preuDecoracio);
                 objecte = decoracio;
@@ -137,23 +150,36 @@ public class Menu {
         return sql;
     }
 
-    public String generarSQLRetirarProducte(int tipus, String nom) {
-        String sql = "";
+    public void retirarProducte(int tipus, String nom) throws ProducteNoTrobatBDD {
+        String tipusProducte = "";
         switch (tipus) {
             case 1:
-                sql = "DELETE FROM Producte WHERE tipus = 'arbre' AND nom = '" + nom + "'";
+                tipusProducte = "arbre";
                 break;
             case 2:
-                sql = "DELETE FROM Producte WHERE tipus = 'flor' AND nom = '" + nom + "'";
+                tipusProducte = "flor";
                 break;
             case 3:
-                sql = "DELETE FROM Producte WHERE tipus = 'decoració' AND nom = '" + nom + "'";
+                tipusProducte = "decoració";
                 break;
             default:
                 System.out.println("Tipus de producte no vàlid");
-                break;
         }
-        return sql;
+        String sqlCheck = "SELECT COUNT(*) FROM Producte WHERE tipus = '" + tipusProducte + "' AND nom = '" + nom + "'";
+        try (Statement statement = connexio.getConnexio().createStatement();
+             ResultSet resultSet = statement.executeQuery(sqlCheck)) {
+            resultSet.next();
+            int count = resultSet.getInt(1);
+            if (count == 0) {
+                throw new ProducteNoTrobatBDD("No s'ha trobat cap producte amb el nom: " + nom);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error en la comprovació del producte: " + e.getMessage());
+        }
+
+        String sqlRetirar = "DELETE FROM Producte WHERE tipus = '" + tipusProducte + "' AND nom = '" + nom + "'";
+        connexio.executarSQL(sqlRetirar);
+
     }
 
 }
