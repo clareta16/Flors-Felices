@@ -1,9 +1,14 @@
 package main;
 
-import Excepcions.LlistaTicketsBuidaException;
+import excepcions.LlistaTicketsBuidaException;
+import models.Arbre;
+import models.Decoracio;
+import models.Flor;
 import models.Ticket;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Floristeria {
 private String nom;
@@ -24,7 +29,7 @@ private List<Ticket> tickets;
 
     }
 
-    public void afegirFlor(Flor flor{
+    public void afegirFlor(Flor flor){
 
     }
 
@@ -49,18 +54,71 @@ private List<Ticket> tickets;
     }
 
     public void imprimirStockQuantitats() {
+        Map<String, Integer> comptadorArbres = new HashMap<>();
+        Map<String, Integer> comptadorFlors = new HashMap<>();
+        Map<String, Integer> comptadorDecoracions = new HashMap<>();
+
+        for (Arbre arbre : stockArbres){
+            comptadorArbres.put(arbre.toString(), comptadorArbres.getOrDefault(arbre.toString(), 0) + 1);
+        }
+
+        for (Flor flor : stockFlors){
+            comptadorFlors.put(flor.toString(), comptadorFlors.getOrDefault(flor.toString(), 0) + 1);
+        }
+
+        for (Decoracio decoracio : stockDecoracions){
+            comptadorDecoracions.put(decoracio.toString(), comptadorDecoracions.getOrDefault(decoracio.toString(), 0) + 1);
+        }
+
+        System.out.println("Stock d'Arbres: ");
+        for (Map.Entry<String, Integer> entry : comptadorArbres.entrySet()) {
+            System.out.println(entry.getKey() + " - Quantitat: " + entry.getValue());
+        }
+
+        System.out.println("Stock de Flors: ");
+        for (Map.Entry<String, Integer> entry : comptadorFlors.entrySet()) {
+            System.out.println(entry.getKey() + " - Quantitat: " + entry.getValue());
+        }
+
+        System.out.println("Stock de Decoracions: ");
+        for (Map.Entry<String, Integer> entry : comptadorDecoracions.entrySet()) {
+            System.out.println(entry.getKey() + " - Quantiat: " + entry.getValue());
+        }
 
     }
 
     public void imprimirValorTotal() {
+        double valorTotal = 0;
+
+        for (Arbre arbre : stockArbres){
+            valorTotal += arbre.getPreu();
+        }
+
+        for (Flor flor : stockFlors){
+            valorTotal += flor.getPreu();
+        }
+
+        for (Decoracio decoracio : stockDecoracions){
+            valorTotal += decoracio.getPreu();
+        }
+
+        System.out.println(String.format("El valor total de tot l'stock és de: %.2f euros.", valorTotal));
 
     }
 
     public void crearTicket() {
-
+        Ticket ticket = new Ticket();
     }
 
     public void mostrarLlistaCompresAntigues() {
+        if(tickets.isEmpty()) {
+            System.out.println("No hi ha compres antigues.");
+        } else {
+            System.out.println("Llista de compres antigues: ");
+            for (Ticket ticket : tickets){
+                System.out.println(ticket);
+            }
+        }
 
     }
 
