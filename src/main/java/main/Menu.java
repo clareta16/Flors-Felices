@@ -15,8 +15,9 @@ public class Menu {
     Scanner scanner = new Scanner(System.in);
     String opcionsMenu = "Tria una opció\n" +
             "1. Crear floristeria\n" +
-            "2. Afegir Producte\n" +
-            "3. Retirar Producte\n" +
+            "2. Afegir producte\n" +
+            "3. Retirar producte\n" +
+            "4. Imprimir estoc\n" +
             "...";
 
     String opcionsTipusProducte = "Quin és el tipus del producte?\n" +
@@ -56,6 +57,10 @@ public class Menu {
                 } catch (ProducteNoTrobatBDD e) {
                     System.out.println(e.getMessage());
                 }
+                break;
+            case 4:
+                //Imprimir estoc
+                veureEstoc();
                 break;
             default:
                 System.out.println("Tornar a escollir, opció no vàlida");
@@ -181,5 +186,24 @@ public class Menu {
         connexio.executarSQL(sqlRetirar);
 
     }
+
+    public void veureEstoc() {
+        String sql = "SELECT * FROM Producte";
+        try (Statement statement = connexio.getConnexio().createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+            System.out.println("Estoc de productes:");
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String tipus = resultSet.getString("tipus");
+                String nom = resultSet.getString("nom");
+                double preu = resultSet.getDouble("preu");
+                String atribut = resultSet.getString("atribut");
+                System.out.println("ID: " + id + ", Tipus: " + tipus + ", Nom: " + nom + ", Preu: " + preu + ", Atribut: " + atribut);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error en recuperar l'estoc: " + e.getMessage());
+        }
+    }
+
 
 }
