@@ -30,4 +30,6 @@ public class Arbre extends Producte {
         return "Arbre: " + nom + ", " + alcadaCm + " cm, " + getPreu() + "€";
     }
 
+
+
 }
