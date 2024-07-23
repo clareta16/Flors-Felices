@@ -1,0 +1,24 @@
+CREATE DATABASE IF NOT EXISTS floristeria;
+
+USE floristeria;
+
+CREATE TABLE IF NOT EXISTS Producte (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tipus VARCHAR(255) NOT NULL,
+    nom VARCHAR(255) NOT NULL,
+    preu DOUBLE NOT NULL,
+    atribut VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Ticket (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    data DATE NOT NULL,
+    total DOUBLE NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS TicketProducte (
+    ticket_id INT,
+    producte_id INT,
+    FOREIGN KEY (ticket_id) REFERENCES Ticket(id),
+    FOREIGN KEY (producte_id) REFERENCES Producte(id)
+);
