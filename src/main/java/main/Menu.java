@@ -33,20 +33,22 @@ public class Menu {
                 break;
             case 2:
                 //Afegir Producte
-                int tipus = menuTipusProducte();
-                Object objecte = crearProducte(tipus);
-                String sql = generarSQLAfegirProducte(tipus, objecte);
-                connexio.executarSQL(sql);
+                int tipusAfegir = menuTipusProducte();
+                Object objecteAfegir = crearProducte(tipusAfegir);
+                String sqlAfegir = generarSQLAfegirProducte(tipusAfegir, objecteAfegir);
+                connexio.executarSQL(sqlAfegir);
                 System.out.println("Producte afegit amb èxit");
                 break;
             case 3:
                 //Retirar Producte
-                tipus = menuTipusProducte();
-                String name = scanner.nextLine();
-
+                int tipusRetirar = menuTipusProducte();
+                System.out.println("Quin és el nom del producte a retirar:");
+                String nom = scanner.nextLine();
+                String sqlRetirar = generarSQLRetirarProducte(tipusRetirar, nom);
+                connexio.executarSQL(sqlRetirar);
                 break;
             default:
-                System.out.println("Tornar a escollir opció vàlida");
+                System.out.println("Tornar a escollir, opció no vàlida");
         }
     }
 
@@ -134,4 +136,24 @@ public class Menu {
         }
         return sql;
     }
+
+    public String generarSQLRetirarProducte(int tipus, String nom) {
+        String sql = "";
+        switch (tipus) {
+            case 1:
+                sql = "DELETE FROM Producte WHERE tipus = 'arbre' AND nom = '" + nom + "'";
+                break;
+            case 2:
+                sql = "DELETE FROM Producte WHERE tipus = 'flor' AND nom = '" + nom + "'";
+                break;
+            case 3:
+                sql = "DELETE FROM Producte WHERE tipus = 'decoració' AND nom = '" + nom + "'";
+                break;
+            default:
+                System.out.println("Tipus de producte no vàlid");
+                break;
+        }
+        return sql;
+    }
+
 }
