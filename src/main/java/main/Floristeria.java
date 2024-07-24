@@ -2,6 +2,7 @@ package main;
 
 import connexio.MySqlConnexio;
 import excepcions.LlistaTicketsBuidaException;
+import excepcions.ProducteNoTrobatBDD;
 import factories.*;
 import models.*;
 
@@ -25,6 +26,7 @@ public class Floristeria {
         this.stockFlors = new ArrayList<>();
         this.stockDecoracions = new ArrayList<>();
         this.tickets = new ArrayList<>();
+        this.connexio = MySqlConnexio.getInstance();
     }
 
     public Object crearProducte(String[] dades) {
@@ -52,66 +54,34 @@ public class Floristeria {
         return objecte;
     }
 
-//    public Object crearProducte(String opcio) {
-//        Object objecte = null;
-//        switch (opcio) {
-//            case "arbre":
-//                System.out.println("Quin és el nom de l'arbre?");
-//                String nomArbre = scanner.nextLine();
-//                System.out.println("Quina alçada té?");
-//                double alcadaCm = scanner.nextDouble();
-//                System.out.println("Quin és el preu?");
-//                double preuArbre = scanner.nextDouble();
-//                scanner.nextLine();
-//                ArbreFactory arbreFactory = new ArbreFactory();
-//                Arbre arbre = (Arbre) arbreFactory.crearProducte(nomArbre, alcadaCm, preuArbre);
-//                objecte = arbre;
-//                System.out.println(arbre + " creat.");
-//                break;
-//            case "flor":
-//                System.out.println("Quin és el nom de la flor?");
-//                String nomFlor = scanner.nextLine();
-//                System.out.println("De quin color és?");
-//                String color = scanner.nextLine();
-//                System.out.println("Quin és el preu?");
-//                double preuFlor = scanner.nextDouble();
-//                scanner.nextLine();
-//                FlorFactory florFactory = new FlorFactory();
-//                Flor flor = (Flor) florFactory.crearProducte(nomFlor, color, preuFlor);
-//                objecte = flor;
-//                System.out.println(flor + " creada.");
-//                break;
-//            case "decoració":
-//                System.out.println("Quin és el nom de la decoració?");
-//                String nomDecoracio = scanner.nextLine();
-//                System.out.println("De quin material és?");
-//                String material = scanner.nextLine(); // Enum
-//                System.out.println("Quin és el preu?");
-//                double preuDecoracio = scanner.nextDouble();
-//                scanner.nextLine();
-//                DecoracioFactory decoracioFactory = new DecoracioFactory();
-//                Decoracio decoracio = (Decoracio) decoracioFactory.crearProducte(nomDecoracio, material, preuDecoracio);
-//                objecte = decoracio;
-//                System.out.println(decoracio + " creada.");
-//                break;
-//            default:
-//                System.out.println("Opció no vàlida, torna a escollir");
-//        }
-//        return objecte;
-//    }
+    public boolean trobarProducte(String tipus, String nom) throws ProducteNoTrobatBDD {
+        boolean trobat = false;
+        String sqlCheck = "SELECT * FROM Producte WHERE tipus = '" + tipus + "' AND nom = '" + nom + "'";
+        try (Statement statement = connexio.getConnexio().createStatement();
+             ResultSet resultSet = statement.executeQuery(sqlCheck)) {
+            if(resultSet.next()){
+                trobat = true;
+            } else {
+                throw new ProducteNoTrobatBDD("El producte no és a la base de dades");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error en la comprovació del producte: " + e.getMessage());
+        }
+        return trobat;
+    }
 
     public String generarSQLAfegirProducte(String tipus, Object producte) {
         String sql = "";
         switch (tipus) {
-            case "arbre":
+            case "Arbre":
                 Arbre arbre = (Arbre) producte;
                 sql = "INSERT INTO Producte (tipus, nom, preu, atribut) VALUES ('arbre', '" + arbre.getNom() + "', " + arbre.getPreu() + ", 'alçada " + arbre.getAlcadaCm() + "cm')";
                 break;
-            case "flor":
+            case "Flor":
                 Flor flor = (Flor) producte;
                 sql = "INSERT INTO Producte (tipus, nom, preu, atribut) VALUES ('flor', '" + flor.getNom() + "', " + flor.getPreu() + ", 'color " + flor.getColor() + "')";
                 break;
-            case "decoració":
+            case "Decoració":
                 Decoracio decoracio = (Decoracio) producte;
                 sql = "INSERT INTO Producte (tipus, nom, preu, atribut) VALUES ('decoració', '" + decoracio.getNom() + "', " + decoracio.getPreu() + ", 'material " + decoracio.getMaterial() + "')";
                 break;
@@ -119,8 +89,22 @@ public class Floristeria {
         return sql;
     }
 
-    public void imprimirStock() {
-
+    public void veureEstoc() {
+        String sql = "SELECT * FROM Producte";
+        try (Statement statement = connexio.getConnexio().createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+            System.out.println("Estoc de productes:");
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String tipus = resultSet.getString("tipus");
+                String nom = resultSet.getString("nom");
+                double preu = resultSet.getDouble("preu");
+                String atribut = resultSet.getString("atribut");
+                System.out.println("ID: " + id + ", Tipus: " + tipus + ", Nom: " + nom + ", Preu: " + preu + ", Atribut: " + atribut);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error en recuperar l'estoc: " + e.getMessage());
+        }
     }
 
     public void imprimirStockQuantitats() {

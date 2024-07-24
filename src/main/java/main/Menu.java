@@ -51,20 +51,21 @@ public class Menu {
                 break;
             case 3:
                 // Retirar Producte
-//                String tipusRetirar = menuTipusProducte();
-//                System.out.println("Quin és el nom del producte a retirar?");
-//                String nomProducte = scanner.nextLine();
-//                try {
-//                    Producte producte = trobarProducte(tipusRetirar, nomProducte);
-//                    retirarProducte(tipusRetirar, producte);
-//                    System.out.println("Producte retirat correctament.");
-//                } catch (ProducteNoTrobatBDD e) {
-//                    System.out.println(e.getMessage());
-//                }
+                String tipusRetirar = menuTipusProducte();
+                System.out.println("Quin és el nom del producte a retirar?");
+                String nomProducte = scanner.nextLine();
+                try {
+                    if(floristeria.trobarProducte(tipusRetirar, nomProducte)){
+                        retirarProducte(tipusRetirar, nomProducte);
+                        System.out.println("Producte retirat correctament.");
+                    }
+                } catch (ProducteNoTrobatBDD e) {
+                    System.out.println(e.getMessage());
+                }
                 break;
             case 4:
                 //Imprimir estoc
-                veureEstoc();
+                floristeria.veureEstoc();
                 break;
             case 5:
                 //Veure estoc per tipus de producte
@@ -133,7 +134,7 @@ public class Menu {
 
     public void afegirProducte() {
         Object objecteAfegir = floristeria.crearProducte(dadesProducte());
-        String tipusAfegir = ((Producte) objecteAfegir).getClass().toString();
+        String tipusAfegir = ((Producte) objecteAfegir).getClass().toString().replace("class models.", "");
         String sqlAfegir = floristeria.generarSQLAfegirProducte(tipusAfegir, objecteAfegir);
         connexio.executarSQL(sqlAfegir);
     }
@@ -145,13 +146,13 @@ public class Menu {
         String tipus = "";
         switch (opcio) {
             case 1:
-                tipus = "arbre";
+                tipus = "Arbre";
                 break;
             case 2:
-                tipus = "flor";
+                tipus = "Flor";
                 break;
             case 3:
-                tipus = "decoració";
+                tipus = "Decoració";
                 break;
             default:
                 System.out.println("Opció no vàlida, torna a escollir");
@@ -159,51 +160,11 @@ public class Menu {
         return tipus;
     }
 
-//    public Producte trobarProducte(String tipus, String nom) throws ProducteNoTrobatBDD {
-//        Producte producte = null;
-//        String sqlCheck = "SELECT * FROM Producte WHERE tipus = '" + tipus + "' AND nom = '" + nom + "'";
-//        try (Statement statement = connexio.getConnexio().createStatement();
-//             ResultSet resultSet = statement.executeQuery(sqlCheck)) {
-//            if(resultSet.next()){
-//                int id = resultSet.getInt("id");
-//                double preu = resultSet.getDouble("preu");
-//                String atribut = resultSet.getString("atribut");
-//
-//            }
-//            int count = resultSet.getInt(1);
-//            if (count == 0) {
-//                throw new ProducteNoTrobatBDD("No s'ha trobat cap producte amb el nom: " + nom);
-//            } else {
-//                producte = resultSet.getObject();
-//            }
-//        } catch (SQLException e) {
-//            System.out.println("Error en la comprovació del producte: " + e.getMessage());
-//        }
-//        return producte;
-//    }
-
-    public void retirarProducte(String tipus, Producte producte) {
-        String sqlRetirar = "DELETE FROM Producte WHERE tipus = '" + tipus + "' AND nom = '" + producte.getNom() + "'";
+    public void retirarProducte(String tipus, String nom) {
+        String sqlRetirar = "DELETE FROM Producte WHERE id = (SELECT id FROM (SELECT id FROM Producte WHERE tipus = '" +
+                tipus + "' AND nom = '" + nom + "' LIMIT 1) as subquery)";
         connexio.executarSQL(sqlRetirar);
 
-    }
-
-    public void veureEstoc() {
-        String sql = "SELECT * FROM Producte";
-        try (Statement statement = connexio.getConnexio().createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
-            System.out.println("Estoc de productes:");
-            while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                String tipus = resultSet.getString("tipus");
-                String nom = resultSet.getString("nom");
-                double preu = resultSet.getDouble("preu");
-                String atribut = resultSet.getString("atribut");
-                System.out.println("ID: " + id + ", Tipus: " + tipus + ", Nom: " + nom + ", Preu: " + preu + ", Atribut: " + atribut);
-            }
-        } catch (SQLException e) {
-            System.out.println("Error en recuperar l'estoc: " + e.getMessage());
-        }
     }
 
 
