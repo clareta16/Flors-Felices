@@ -1,11 +1,16 @@
 package main;
 
+import connexio.MySqlConnexio;
 import excepcions.LlistaTicketsBuidaException;
 import models.Arbre;
 import models.Decoracio;
 import models.Flor;
 import models.Ticket;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -125,13 +130,23 @@ private List<Ticket> tickets;
     public String visualitzarTotalDinersGuanyats() throws LlistaTicketsBuidaException {
         double dinersGuanyats = 0.00;
 
-            if (tickets.isEmpty()) {
-                throw new LlistaTicketsBuidaException("No hi ha cap ticket a la llista de tickets");
-            }
-            for (Ticket ticket : tickets) {
-                dinersGuanyats += ticket.getPreuTotal();
-            }
+        if (tickets.isEmpty()) {
+            throw new LlistaTicketsBuidaException("No hi ha cap ticket a la llista de tickets");
+        }
 
-        return "La floristeria ha guanyat un total de " + dinersGuanyats + " euros";
+        String query = "SELECT SUM(preuTotal) AS total FROM tickets";
+
+        try (Connection connect = MySqlConnexio.getInstance().getConnexio();
+             Statement statement = connect.createStatement();
+             ResultSet resultat = statement.executeQuery(query)) {
+
+            if (resultat.next()) {
+                dinersGuanyats = resultat.getDouble("total");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al calcular el total " + e.getMessage());
+        }
+
+        return "La floristeria Flors Felices ha guanyat en total " + dinersGuanyats + " euros";
     }
 }
