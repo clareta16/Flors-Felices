@@ -52,7 +52,7 @@ public class Ticket {
     }
 
     private void guardarProducteTicket(Producte producte) {
-        String query = "INSERT INTO productes (ticket_id, nom, tipus, preu, caracteristiques) VALUES (?, ?)";
+        String query = "INSERT INTO TicketProducte (ticket_id, producte_id) VALUES (?, ?)";
 
         try (Connection connect = MySqlConnexio.getInstance().getConnexio();
              PreparedStatement statement = connect.prepareStatement(query)) {
