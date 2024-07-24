@@ -1,22 +1,11 @@
 package models;
 
 public class Decoracio extends Producte {
-
-    private String nom;
     private Enum<Material> material;
 
     public Decoracio(String nom, Enum<Material> material, double preu) {
-        super(preu);
-        this.nom = nom;
+        super(nom, preu);
         this.material = material;
-    }
-
-    public String getNom() {
-        return nom;
-    }
-
-    public void setNom(String nom) {
-        this.nom = nom;
     }
 
     public Enum<Material> getMaterial() {
@@ -28,6 +17,6 @@ public class Decoracio extends Producte {
     }
 
     public String caracteristiquesProducte() {
-        return "Decoracio: " + nom + ", " + material + getPreu() + "€";
+        return "Decoracio: " + super.getNom() + ", material: " + this.material + ", " + super.getPreu() + "€";
     }
 }
