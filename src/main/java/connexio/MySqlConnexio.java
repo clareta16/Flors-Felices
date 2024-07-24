@@ -1,7 +1,11 @@
 package connexio;
 
+import models.*;
+
 import java.io.*;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -111,5 +115,168 @@ public class MySqlConnexio {
         } catch (SQLException e) {
             System.out.println("Error en els comandaments sql: " + e.getMessage());
         }
+    }
+
+    /* Mètode que em permet recuperat els tickets de la base de dades, i després passar-los com
+    a paràmetre per a que un altre mètode els mostri per pantalla*/
+    public List<Ticket> obtenirTotsElsTickets() {
+        List<Ticket> tickets = new ArrayList<>();
+        String sql = "SELECT * FROM tickets";
+
+        try (Statement statement = getConnexio().createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String data = resultSet.getString("data");
+                String hora = resultSet.getString("hora");
+                double preuTotal = resultSet.getDouble("preuTotal");
+
+                Ticket ticket = new Ticket(id, data, hora, preuTotal);
+                tickets.add(ticket);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error en recuperar els tickets: " + e.getMessage());
+        }
+        return tickets;
+    }
+
+    public void imprimirStock() {
+        String sql = "SELECT * FROM Producte";
+        try (Statement statement = getConnexio().createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+            List<String> arbres = new ArrayList<>();
+            List<String> flors = new ArrayList<>();
+            List<String> decoracions = new ArrayList<>();
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String tipus = resultSet.getString("tipus");
+                String nom = resultSet.getString("nom");
+                double preu = resultSet.getDouble("preu");
+                String atribut = resultSet.getString("atribut");
+
+                String producteInfo = "ID: " + id + ", Nom: " + nom + ", Preu: " + preu + ", Atribut: " + atribut;
+
+                switch (tipus.toLowerCase()) {
+                    case "arbre":
+                        arbres.add(producteInfo);
+                        break;
+                    case "flor":
+                        flors.add(producteInfo);
+                        break;
+                    case "decoració":
+                        decoracions.add(producteInfo);
+                        break;
+                    default:
+                        System.out.println("Tipus de producte desconegut: " + tipus);
+                }
+            }
+
+            System.out.println("Arbres:");
+            for (String arbre : arbres) {
+                System.out.println(arbre);
+            }
+
+            System.out.println("\nFlors:");
+            for (String flor : flors) {
+                System.out.println(flor);
+            }
+
+            System.out.println("\nDecoracions:");
+            for (String decoracio : decoracions) {
+                System.out.println(decoracio);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error en recuperar els productes: " + e.getMessage());
+        }
+    }
+
+    public double obtenirValorTotalFloristeria() {
+        String sql = "SELECT SUM(preu) AS valor_total FROM Producte";
+        double valorTotal = 0;
+
+        try (Statement statement = getConnexio().createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+            if (resultSet.next()) {
+                valorTotal = resultSet.getDouble("valor_total");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error en calcular el valor total de la floristeria: " + e.getMessage());
+        }
+        return valorTotal;
+    }
+
+    public void afegirTicketAmbProductes(Ticket ticket, List<String> nomsProductes) {
+        String ticketQuery = "INSERT INTO Ticket (data, total) VALUES (?, ?)";
+        String retirarProducteQuery = "DELETE FROM Producte WHERE id = ?";
+
+        try (Connection connect = getConnexio();
+             PreparedStatement ticketStatement = connect.prepareStatement(ticketQuery, Statement.RETURN_GENERATED_KEYS);
+             PreparedStatement retirarProducteStatement = connect.prepareStatement(retirarProducteQuery)) {
+
+            // Inserir el ticket a la base de dades
+            ticketStatement.setDate(1, Date.valueOf(ticket.getData()));
+            ticketStatement.setDouble(2, ticket.getPreuTotal());
+            ticketStatement.executeUpdate();
+
+            // Obtenir l'ID del ticket generat
+            try (ResultSet generatedKeys = ticketStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    int ticketId = generatedKeys.getInt(1);
+                    ticket.setId(ticketId);
+
+                    // Inserir cada producte al ticket i retirar-lo del stock
+                    for (String nomProducte : nomsProductes) {
+                        // Obtenir el producte pel nom
+                        Producte producte = obtenirProductePerNom(nomProducte);
+                        if (producte != null) {
+                            // Afegir producte al ticket
+                            ticket.afegirProducteTicket(producte);
+
+                            // Retirar producte del stock
+                            retirarProducteStatement.setInt(1, producte.getId());
+                            retirarProducteStatement.executeUpdate();
+                        } else {
+                            System.out.println("Producte no trobat: " + nomProducte);
+                        }
+                    }
+                } else {
+                    throw new SQLException("Error al obtenir l'ID generat del ticket.");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error en afegir el ticket amb productes: " + e.getMessage());
+        }
+    }
+
+    public Producte obtenirProductePerNom(String nom) {
+        String query = "SELECT * FROM Producte WHERE nom = ? LIMIT 1";
+        try (Connection connect = getConnexio();
+             PreparedStatement statement = connect.prepareStatement(query)) {
+            statement.setString(1, nom);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    String tipus = resultSet.getString("tipus");
+                    double preu = resultSet.getDouble("preu");
+                    String atribut = resultSet.getString("atribut");
+
+                    switch (tipus.toLowerCase()) {
+                        case "arbre":
+                            return new Arbre(nom, Double.parseDouble(atribut), preu);
+                        case "flor":
+                            return new Flor(nom, atribut, preu);
+                        case "decoracio":
+                            return new Decoracio(nom, Material.valueOf(atribut.toUpperCase()), preu);
+                        default:
+                            throw new IllegalArgumentException("Tipus de producte desconegut: " + tipus);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error en obtenir el producte per nom: " + e.getMessage());
+        }
+        return null;
     }
 }
