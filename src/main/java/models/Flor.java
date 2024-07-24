@@ -1,21 +1,11 @@
 package models;
 
 public class Flor extends Producte {
-    private String nom;
     private String color;
 
     public Flor(String nom, String color, double preu) {
-        super(preu);
-        this.nom = nom;
+        super(nom, preu);
         this.color = color;
-    }
-
-    public String getNom() {
-        return nom;
-    }
-
-    public void setNom(String nom) {
-        this.nom = nom;
     }
 
     public String getColor() {
@@ -27,6 +17,6 @@ public class Flor extends Producte {
     }
 
     public String caracteristiquesProducte() {
-        return "Flor: " + nom + ", " + color + getPreu() + "€";
+        return "Flor: " + super.getNom() + ", color: " + this.color + ", " + super.getPreu() + "€";
     }
 }

@@ -90,20 +90,20 @@ public class Menu {
         }
     }
 
-    public int menuTipusProducte() {
+    public String menuTipusProducte() {
         System.out.println(opcionsTipusProducte);
         int opcio = scanner.nextInt();
         scanner.nextLine();
-        int tipus = 0;
+        String tipus = "";
         switch (opcio) {
             case 1:
-                tipus = 1;
+                tipus = "arbre";
                 break;
             case 2:
-                tipus = 2;
+                tipus = "flor";
                 break;
             case 3:
-                tipus = 3;
+                tipus = "decoració";
                 break;
             default:
                 System.out.println("Opció no vàlida, torna a escollir");
@@ -159,18 +159,18 @@ public class Menu {
         return objecte;
     }
 
-    public String generarSQLAfegirProducte(int tipus, Object producte) {
+    public String generarSQLAfegirProducte(String tipus, Object producte) {
         String sql = "";
         switch (tipus) {
-            case 1:
+            case "arbre":
                 Arbre arbre = (Arbre) producte;
                 sql = "INSERT INTO Producte (tipus, nom, preu, atribut) VALUES ('arbre', '" + arbre.getNom() + "', " + arbre.getPreu() + ", 'alçada " + arbre.getAlcadaCm() + "cm')";
                 break;
-            case 2:
+            case "flor":
                 Flor flor = (Flor) producte;
                 sql = "INSERT INTO Producte (tipus, nom, preu, atribut) VALUES ('flor', '" + flor.getNom() + "', " + flor.getPreu() + ", 'color " + flor.getColor() + "')";
                 break;
-            case 3:
+            case "decoració":
                 Decoracio decoracio = (Decoracio) producte;
                 sql = "INSERT INTO Producte (tipus, nom, preu, atribut) VALUES ('decoració', '" + decoracio.getNom() + "', " + decoracio.getPreu() + ", 'material " + decoracio.getMaterial() + "')";
                 break;
@@ -178,34 +178,26 @@ public class Menu {
         return sql;
     }
 
-    public void retirarProducte(int tipus, String nom) throws ProducteNoTrobatBDD {
-        String tipusProducte = "";
-        switch (tipus) {
-            case 1:
-                tipusProducte = "arbre";
-                break;
-            case 2:
-                tipusProducte = "flor";
-                break;
-            case 3:
-                tipusProducte = "decoració";
-                break;
-            default:
-                System.out.println("Tipus de producte no vàlid");
-        }
-        String sqlCheck = "SELECT COUNT(*) FROM Producte WHERE tipus = '" + tipusProducte + "' AND nom = '" + nom + "'";
+    public Producte trobarProducte(String tipus, String nom) throws ProducteNoTrobatBDD {
+        Producte producte = null;
+        String sqlCheck = "SELECT COUNT(*) FROM Producte WHERE tipus = '" + tipus + "' AND nom = '" + nom + "'";
         try (Statement statement = connexio.getConnexio().createStatement();
              ResultSet resultSet = statement.executeQuery(sqlCheck)) {
             resultSet.next();
             int count = resultSet.getInt(1);
             if (count == 0) {
                 throw new ProducteNoTrobatBDD("No s'ha trobat cap producte amb el nom: " + nom);
+            } else {
+                producte = resultSet.getObject();
             }
         } catch (SQLException e) {
             System.out.println("Error en la comprovació del producte: " + e.getMessage());
         }
+        return producte;
+    }
 
-        String sqlRetirar = "DELETE FROM Producte WHERE tipus = '" + tipusProducte + "' AND nom = '" + nom + "'";
+    public void retirarProducte(String tipus, Producte producte) {
+                String sqlRetirar = "DELETE FROM Producte WHERE tipus = '" + tipus + "' AND nom = '" + /*TODO*/ + "'";
         connexio.executarSQL(sqlRetirar);
 
     }
