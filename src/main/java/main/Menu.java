@@ -17,8 +17,13 @@ public class Menu {
             "1. Crear floristeria\n" +
             "2. Afegir producte\n" +
             "3. Retirar producte\n" +
-            "4. Imprimir estoc\n" +
-            "...";
+            "4. Veure estoc\n" +
+            "5. Veure estoc per tipus de producte\n" +
+            "6. Veure valor total estoc\n" +
+            "7. Crear ticket compra (-> seleccionar productes, retirar-los de la bdd, afegir-los al ticket, imprimir ticket)\n" +
+            "8. Mostrar llista de tickets\n" +
+            "9. Veure total vendes\n" +
+            "10. Sortir";
 
     String opcionsTipusProducte = "Quin és el tipus del producte?\n" +
             "1. Arbre\n" +
@@ -61,6 +66,24 @@ public class Menu {
             case 4:
                 //Imprimir estoc
                 veureEstoc();
+                break;
+            case 5:
+                //Veure estoc per tipus de producte
+                break;
+            case 6:
+                //Veure valor total estoc
+                break;
+            case 7:
+                //Crear ticket compra
+                break;
+            case 8:
+                //Mostrar llista de tickets
+                break;
+            case 9:
+                //Veure total vendes
+                break;
+            case 10:
+                //Sortir
                 break;
             default:
                 System.out.println("Tornar a escollir, opció no vàlida");
