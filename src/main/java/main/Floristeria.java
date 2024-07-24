@@ -127,8 +127,8 @@ private List<Ticket> tickets;
 
     }
 
-    public String visualitzarTotalDinersGuanyats() throws LlistaTicketsBuidaException {
-        double dinersGuanyats = 0.00;
+    public String visualitzarTotalDinersGuanyats(Ticket ticket) throws LlistaTicketsBuidaException {
+
 
         if (tickets.isEmpty()) {
             throw new LlistaTicketsBuidaException("No hi ha cap ticket a la llista de tickets");
@@ -141,12 +141,12 @@ private List<Ticket> tickets;
              ResultSet resultat = statement.executeQuery(query)) {
 
             if (resultat.next()) {
-                dinersGuanyats = resultat.getDouble("total");
+                ticket.calcularTotal();
             }
         } catch (SQLException e) {
             System.out.println("Error al calcular el total " + e.getMessage());
         }
 
-        return "La floristeria Flors Felices ha guanyat en total " + dinersGuanyats + " euros";
+        return "La floristeria Flors Felices ha guanyat en total " + ticket.calcularTotal() + " euros";
     }
 }
