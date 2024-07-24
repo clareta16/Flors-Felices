@@ -1,10 +1,10 @@
 package main;
 
-import factories.*;
 import models.*;
 import connexio.*;
 import excepcions.ProducteNoTrobatBDD;
 
+import java.sql.Array;
 import java.util.Scanner;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,6 +13,7 @@ import java.sql.Statement;
 public class Menu {
     private MySqlConnexio connexio;
     Scanner scanner = new Scanner(System.in);
+    Floristeria floristeria = new Floristeria("Flors-Felices");
     String opcionsMenu = "Tria una opció\n" +
             "1. Crear floristeria\n" +
             "2. Afegir producte\n" +
@@ -45,23 +46,21 @@ public class Menu {
                 break;
             case 2:
                 // Afegir Producte
-                int tipusAfegir = menuTipusProducte();
-                Object objecteAfegir = crearProducte(tipusAfegir);
-                String sqlAfegir = generarSQLAfegirProducte(tipusAfegir, objecteAfegir);
-                connexio.executarSQL(sqlAfegir);
+                afegirProducte();
                 System.out.println("Producte afegit amb èxit");
                 break;
             case 3:
                 // Retirar Producte
-                int tipusRetirar = menuTipusProducte();
-                System.out.println("Quin és el nom del producte a retirar?");
-                String nom = scanner.nextLine();
-                try {
-                    retirarProducte(tipusRetirar, nom);
-                    System.out.println("Producte retirat correctament.");
-                } catch (ProducteNoTrobatBDD e) {
-                    System.out.println(e.getMessage());
-                }
+//                String tipusRetirar = menuTipusProducte();
+//                System.out.println("Quin és el nom del producte a retirar?");
+//                String nomProducte = scanner.nextLine();
+//                try {
+//                    Producte producte = trobarProducte(tipusRetirar, nomProducte);
+//                    retirarProducte(tipusRetirar, producte);
+//                    System.out.println("Producte retirat correctament.");
+//                } catch (ProducteNoTrobatBDD e) {
+//                    System.out.println(e.getMessage());
+//                }
                 break;
             case 4:
                 //Imprimir estoc
@@ -90,6 +89,55 @@ public class Menu {
         }
     }
 
+    public String[] dadesProducte() {
+        String[] dades = new String[4];
+        String tipusAfegir = menuTipusProducte();
+        System.out.println("Quin és el nom del producte?");
+        String nomProducte = scanner.nextLine();
+        System.out.println("Quin és el preu?");
+        double preuProducte = scanner.nextDouble();
+        Object atribut = null;
+        switch(tipusAfegir){
+            case "arbre":
+                System.out.println("Quina és l'alçada de l'arbre?");
+                atribut = scanner.nextDouble();
+                break;
+            case "flor":
+                System.out.println("Quin és el color de la flor?");
+                atribut = scanner.nextLine();
+                break;
+            case "decoració":
+                System.out.println("Quin és el material de la decoració?\n" +
+                        "[1. Fusta o 2. Plàstic]");
+                int opcioMaterial = scanner.nextInt();
+                scanner.nextLine();
+                switch(opcioMaterial) {
+                    case 1:
+                        atribut = Material.FUSTA;
+                        break;
+                    case 2:
+                        atribut = Material.PLASTIC;
+                        break;
+                    default:
+                        System.out.println("Escull 1 per fusta o 2 per plàstic, siusplau");
+                }
+                break;
+        }
+        dades[0] = tipusAfegir;
+        dades[1] = nomProducte;
+        dades[2] = String.valueOf(preuProducte);
+        dades[3] = String.valueOf(atribut);
+
+        return dades;
+    }
+
+    public void afegirProducte() {
+        Object objecteAfegir = floristeria.crearProducte(dadesProducte());
+        String tipusAfegir = ((Producte) objecteAfegir).getClass().toString();
+        String sqlAfegir = floristeria.generarSQLAfegirProducte(tipusAfegir, objecteAfegir);
+        connexio.executarSQL(sqlAfegir);
+    }
+
     public String menuTipusProducte() {
         System.out.println(opcionsTipusProducte);
         int opcio = scanner.nextInt();
@@ -111,93 +159,31 @@ public class Menu {
         return tipus;
     }
 
-    public Object crearProducte(int opcio) {
-        Object objecte = null;
-        switch (opcio) {
-            case 1:
-                System.out.println("Quin és el nom de l'arbre?");
-                String nomArbre = scanner.nextLine();
-                System.out.println("Quina alçada té?");
-                double alcadaCm = scanner.nextDouble();
-                System.out.println("Quin és el preu?");
-                double preuArbre = scanner.nextDouble();
-                scanner.nextLine(); // Afegit per consumir la nova línia
-                ArbreFactory arbreFactory = new ArbreFactory();
-                Arbre arbre = (Arbre) arbreFactory.crearProducte(nomArbre, alcadaCm, preuArbre);
-                objecte = arbre;
-                System.out.println(arbre + " creat.");
-                break;
-            case 2:
-                System.out.println("Quin és el nom de la flor?");
-                String nomFlor = scanner.nextLine();
-                System.out.println("De quin color és?");
-                String color = scanner.nextLine();
-                System.out.println("Quin és el preu?");
-                double preuFlor = scanner.nextDouble();
-                scanner.nextLine(); // Afegit per consumir la nova línia
-                FlorFactory florFactory = new FlorFactory();
-                Flor flor = (Flor) florFactory.crearProducte(nomFlor, color, preuFlor);
-                objecte = flor;
-                System.out.println(flor + " creada.");
-                break;
-            case 3:
-                System.out.println("Quin és el nom de la decoració?");
-                String nomDecoracio = scanner.nextLine();
-                System.out.println("De quin material és?");
-                String material = scanner.nextLine(); // Enum
-                System.out.println("Quin és el preu?");
-                double preuDecoracio = scanner.nextDouble();
-                scanner.nextLine(); // Afegit per consumir la nova línia
-                DecoracioFactory decoracioFactory = new DecoracioFactory();
-                Decoracio decoracio = (Decoracio) decoracioFactory.crearProducte(nomDecoracio, material, preuDecoracio);
-                objecte = decoracio;
-                System.out.println(decoracio + " creada.");
-                break;
-            default:
-                System.out.println("Opció no vàlida, torna a escollir");
-        }
-        return objecte;
-    }
-
-    public String generarSQLAfegirProducte(String tipus, Object producte) {
-        String sql = "";
-        switch (tipus) {
-            case "arbre":
-                Arbre arbre = (Arbre) producte;
-                sql = "INSERT INTO Producte (tipus, nom, preu, atribut) VALUES ('arbre', '" + arbre.getNom() + "', " + arbre.getPreu() + ", 'alçada " + arbre.getAlcadaCm() + "cm')";
-                break;
-            case "flor":
-                Flor flor = (Flor) producte;
-                sql = "INSERT INTO Producte (tipus, nom, preu, atribut) VALUES ('flor', '" + flor.getNom() + "', " + flor.getPreu() + ", 'color " + flor.getColor() + "')";
-                break;
-            case "decoració":
-                Decoracio decoracio = (Decoracio) producte;
-                sql = "INSERT INTO Producte (tipus, nom, preu, atribut) VALUES ('decoració', '" + decoracio.getNom() + "', " + decoracio.getPreu() + ", 'material " + decoracio.getMaterial() + "')";
-                break;
-        }
-        return sql;
-    }
-
-    public Producte trobarProducte(String tipus, String nom) throws ProducteNoTrobatBDD {
-        Producte producte = null;
-        String sqlCheck = "SELECT COUNT(*) FROM Producte WHERE tipus = '" + tipus + "' AND nom = '" + nom + "'";
-        try (Statement statement = connexio.getConnexio().createStatement();
-             ResultSet resultSet = statement.executeQuery(sqlCheck)) {
-            resultSet.next();
-            int count = resultSet.getInt(1);
-            if (count == 0) {
-                throw new ProducteNoTrobatBDD("No s'ha trobat cap producte amb el nom: " + nom);
-            } else {
-                producte = resultSet.getObject();
-            }
-        } catch (SQLException e) {
-            System.out.println("Error en la comprovació del producte: " + e.getMessage());
-        }
-        return producte;
-    }
+//    public Producte trobarProducte(String tipus, String nom) throws ProducteNoTrobatBDD {
+//        Producte producte = null;
+//        String sqlCheck = "SELECT * FROM Producte WHERE tipus = '" + tipus + "' AND nom = '" + nom + "'";
+//        try (Statement statement = connexio.getConnexio().createStatement();
+//             ResultSet resultSet = statement.executeQuery(sqlCheck)) {
+//            if(resultSet.next()){
+//                int id = resultSet.getInt("id");
+//                double preu = resultSet.getDouble("preu");
+//                String atribut = resultSet.getString("atribut");
+//
+//            }
+//            int count = resultSet.getInt(1);
+//            if (count == 0) {
+//                throw new ProducteNoTrobatBDD("No s'ha trobat cap producte amb el nom: " + nom);
+//            } else {
+//                producte = resultSet.getObject();
+//            }
+//        } catch (SQLException e) {
+//            System.out.println("Error en la comprovació del producte: " + e.getMessage());
+//        }
+//        return producte;
+//    }
 
     public void retirarProducte(String tipus, Producte producte) {
-                String sqlRetirar = "DELETE FROM Producte WHERE tipus = '" + tipus + "' AND nom = '" + /*TODO*/ + "'";
+        String sqlRetirar = "DELETE FROM Producte WHERE tipus = '" + tipus + "' AND nom = '" + producte.getNom() + "'";
         connexio.executarSQL(sqlRetirar);
 
     }

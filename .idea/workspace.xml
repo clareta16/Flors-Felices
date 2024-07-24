@@ -5,7 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3bcf483f-7305-4009-9078-73e79931503a" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/resources/db.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/connexio/MySqlConnexio.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/connexio/MySqlConnexio.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/main/Floristeria.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/main/Floristeria.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/main/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/main/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/main/Menu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/main/Menu.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -14,6 +19,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
@@ -26,10 +34,11 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Application.Main.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "dev",
+    "git-widget-placeholder": "feature/refactor-menu",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/clara/IdeaProjects/FlorsFelices/src/main/java",
+    "last_opened_file_path": "C:/Users/smcri/Downloads/mysql-8.0.25/mysql-connector-java-8.0.25.jar",
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.0"
