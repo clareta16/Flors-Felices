@@ -3,6 +3,7 @@ package connexio;
 import models.*;
 
 import java.io.*;
+import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,8 +59,10 @@ public class MySqlConnexio {
         try {
             connexio = DriverManager.getConnection(URL + "/" + BASEDADES + "?useSSL=true", USUARI, CONTRASENYA);
             System.out.println("Connectat a la base de dades");
+            String camiContentRoot = "src" + File.separator + "main" + File.separator + "java" + File.separator + "connexio" + File.separator + "crearBDD.txt";
+//            Paths path = Paths.get(camiContentRoot);
             if (!hiHaTaules()) {
-                executarSQLdArxiu("C:\\Users\\smcri\\Desktop\\CODE\\HappyFlowers\\src\\main\\java\\connexio\\crearBDD.txt");
+                executarSQLdArxiu(camiContentRoot);
             }
         } catch (SQLException e) {
             System.out.println("Error en connectar a la base de dades: " + e.getMessage());
