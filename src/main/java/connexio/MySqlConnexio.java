@@ -213,6 +213,9 @@ public class MySqlConnexio {
              PreparedStatement ticketStatement = connect.prepareStatement(ticketQuery, Statement.RETURN_GENERATED_KEYS);
              PreparedStatement retirarProducteStatement = connect.prepareStatement(retirarProducteQuery)) {
 
+            // Desactivar l'auto-commit per començar una transacció
+            connect.setAutoCommit(false);
+
             // Inserir el ticket a la base de dades
             ticketStatement.setDate(1, Date.valueOf(ticket.getData()));
             ticketStatement.setDouble(2, ticket.getPreuTotal());
@@ -239,9 +242,19 @@ public class MySqlConnexio {
                             System.out.println("Producte no trobat: " + nomProducte);
                         }
                     }
+
+                    // Cometre la transacció
+                    connect.commit();
                 } else {
                     throw new SQLException("Error al obtenir l'ID generat del ticket.");
                 }
+            } catch (SQLException e) {
+                // Fer rollback si hi ha algun error durant l'obtenció de claus generades o la inserció de productes
+                connect.rollback();
+                throw e;
+            } finally {
+                // Tornar a activar l'auto-commit
+                connect.setAutoCommit(true);
             }
         } catch (SQLException e) {
             System.out.println("Error en afegir el ticket amb productes: " + e.getMessage());
