@@ -152,9 +152,9 @@ public class Menu {
     }
 
     public String menuTipusProducte() {
-        System.out.println(opcionsTipusProducte);
-        int opcio = scanner.nextInt();
-        scanner.nextLine();
+        String preguntaX = opcionsTipusProducte;
+        int opcio = entradaInt(preguntaX);
+
         String tipus = "";
         switch (opcio) {
             case 1:
