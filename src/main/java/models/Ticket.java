@@ -70,7 +70,7 @@ public class Ticket {
 
     public void imprimirTicket(Ticket ticket){
         System.out.println("Ticket de la compra " + ticket.getId());
-        System.out.println(ticket.getData() + " " + ticket.getHora());
+        System.out.println(ticket.getData());
 
         String query = "SELECT * FROM productes WHERE ticket_id = ?";
 
