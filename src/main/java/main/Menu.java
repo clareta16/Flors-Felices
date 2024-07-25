@@ -80,6 +80,7 @@ public class Menu {
                 //Mostrar llista de tickets
                 break;
             case 9:
+                floristeria.visualitzarTotalDinersGuanyats();
                 //Veure total vendes
                 break;
             case 10:
