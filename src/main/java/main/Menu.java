@@ -68,16 +68,16 @@ public class Menu {
                 floristeria.veureEstoc();
                 break;
             case 5:
-                //Veure estoc per tipus de producte
+                floristeria.imprimirStockQuantitats();
                 break;
             case 6:
-                //Veure valor total estoc
+                floristeria.imprimirValorTotal();
                 break;
             case 7:
-                //Crear ticket compra
+                floristeria.crearTicket();
                 break;
             case 8:
-                //Mostrar llista de tickets
+                floristeria.mostrarLlistaCompresAntigues();
                 break;
             case 9:
                 try {
