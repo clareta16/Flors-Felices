@@ -141,7 +141,7 @@ public class Floristeria {
         } while (afegirMesProductes);
 
         // Afegir el ticket amb els productes a la base de dades
-//        connexio.afegirTicketAmbProductes(ticket, nomsProductes);
+        connexio.afegirTicketAmbProductes(ticket, nomsProductes);
 
         System.out.println("Ticket amb múltiples productes afegit amb ID: " + ticket.getId());
     }
