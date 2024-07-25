@@ -110,26 +110,20 @@ public class Menu {
         String[] dades = new String[4];
         String tipusAfegir = menuTipusProducte();
 
-        String pregunta1 = "Quin és el nom del producte?";
-        String nomProducte = entradaBuida(pregunta1);
-
-        String pregunta2 = "Quin és el preu?";
-        double preuProducte = entradaDouble(pregunta2);
+        String nomProducte = entradaBuida("Quin és el nom del producte?");
+        double preuProducte = entradaDouble("Quin és el preu?");
         Object atribut = null;
 
         switch(tipusAfegir){
             case "Arbre":
-                String pregunta3 = "Quina és l'alçada de l'arbre?";
-                atribut = entradaDouble(pregunta3);
+                atribut = entradaDouble("Quina és l'alçada de l'arbre?");
                 break;
             case "Flor":
-                String pregunta4 = "Quin és el color de la flor?";
-                atribut = entradaBuida(pregunta4);
+                atribut = entradaBuida("Quin és el color de la flor?");
                 break;
             case "Decoració":
-                String pregunta5 = "Quin és el material de la decoració?\n" +
-                        "[1. Fusta o 2. Plàstic]";
-                int opcioMaterial = entradaInt(pregunta5);
+                int opcioMaterial = entradaInt("Quin és el material de la decoració?\n" +
+                        "[1. Fusta o 2. Plàstic]");
 
                 switch(opcioMaterial) {
                     case 1:
