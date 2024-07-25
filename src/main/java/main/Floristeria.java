@@ -159,7 +159,9 @@ public class Floristeria {
         }
     }
 
-    public String visualitzarTotalDinersGuanyats(Ticket ticket) throws LlistaTicketsBuidaException {
+    public String visualitzarTotalDinersGuanyats() throws LlistaTicketsBuidaException {
+       Ticket ticket = new Ticket();
+
         if (tickets.isEmpty()) {
             throw new LlistaTicketsBuidaException("No hi ha cap ticket a la llista de tickets");
         }
