@@ -32,19 +32,19 @@ public class Floristeria {
     public Object crearProducte(String[] dades) {
         Object objecte = null;
         switch(dades[0]){
-            case "arbre":
+            case "Arbre":
                 ArbreFactory arbreFactory = new ArbreFactory();
                 Arbre arbre = (Arbre) arbreFactory.crearProducte(dades[1], Double.parseDouble(dades[3]), Double.parseDouble(dades[2]));
                 objecte = arbre;
                 System.out.println("Arbre creat.");
                 break;
-            case "flor":
+            case "Flor":
                 FlorFactory florFactory = new FlorFactory();
                 Flor flor = (Flor) florFactory.crearProducte(dades[1], dades[3] , Double.parseDouble(dades[2]));
                 objecte = flor;
                 System.out.println("Flor creada.");
                 break;
-            case "decoració":
+            case "Decoració":
                 DecoracioFactory decoracioFactory = new DecoracioFactory();
                 Decoracio decoracio = (Decoracio) decoracioFactory.crearProducte(dades[1], Material.valueOf(dades[3]), Double.parseDouble(dades[2]));
                 objecte = decoracio;

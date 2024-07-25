@@ -4,11 +4,7 @@ import models.*;
 import connexio.*;
 import excepcions.ProducteNoTrobatBDD;
 
-import java.sql.Array;
 import java.util.Scanner;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 public class Menu {
     private MySqlConnexio connexio;
@@ -35,10 +31,11 @@ public class Menu {
         connexio = MySqlConnexio.getInstance();
     }
 
-    public void menuPrincipal() {
+    public boolean menuPrincipal() {
         System.out.println("Benvingut/da al gestor de Floristeries");
         System.out.println(opcionsMenu);
         int opcio = scanner.nextInt();
+        boolean exit = false;
         scanner.nextLine(); // Afegit per consumir la nova línia
         switch (opcio) {
             case 1:
@@ -84,10 +81,13 @@ public class Menu {
                 break;
             case 10:
                 //Sortir
+                System.out.println("Gràcies per fer servir el gestor de floristeria");
+                exit = true;
                 break;
             default:
                 System.out.println("Tornar a escollir, opció no vàlida");
         }
+        return exit;
     }
 
     public String[] dadesProducte() {
@@ -167,5 +167,11 @@ public class Menu {
 
     }
 
+    public void run() {
+        boolean exit;
+        do {
+            exit = menuPrincipal();
+        } while (!exit);
+    }
 
 }
