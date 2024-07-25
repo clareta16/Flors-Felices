@@ -72,7 +72,7 @@ public class Ticket {
         System.out.println("Ticket de la compra " + ticket.getId());
         System.out.println(ticket.getData());
 
-        String query = "SELECT * FROM productes WHERE ticket_id = ?";
+        String query = "SELECT * FROM producte WHERE ticket_id = ?";
 
         try (Connection connect = MySqlConnexio.getInstance().getConnexio();
              PreparedStatement statement = connect.prepareStatement(query)) {
@@ -94,7 +94,7 @@ public class Ticket {
     public double calcularTotal(){
         double total = 0.0;
 
-        String query = "SELECT SUM(preu) AS total FROM productes WHERE ticket_id = ?";
+        String query = "SELECT SUM(preu) AS total FROM producte WHERE ticket_id = ?";
 
         try (Connection connect = MySqlConnexio.getInstance().getConnexio();
              PreparedStatement statement = connect.prepareStatement(query)) {
