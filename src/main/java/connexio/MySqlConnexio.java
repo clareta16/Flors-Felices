@@ -126,7 +126,7 @@ public class MySqlConnexio {
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String data = resultSet.getString("data");
-                double preuTotal = resultSet.getDouble("preuTotal");
+                double preuTotal = resultSet.getDouble("total");
 
                 Ticket ticket = new Ticket();
                 tickets.add(ticket);
