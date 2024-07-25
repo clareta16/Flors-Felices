@@ -126,7 +126,6 @@ public class MySqlConnexio {
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String data = resultSet.getString("data");
-                String hora = resultSet.getString("hora");
                 double preuTotal = resultSet.getDouble("preuTotal");
 
                 Ticket ticket = new Ticket();
