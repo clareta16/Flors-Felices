@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Ticket {
-    private static int nextId = 0;
     private int id;
     private LocalDate data;
     private LocalTime hora;
@@ -20,7 +19,6 @@ public class Ticket {
     private List<Producte> productesTicket;
 
     public Ticket() {
-        this.id = ++nextId;
         this.data = LocalDate.now();
         this.hora = LocalTime.now();
         this.productesTicket = new ArrayList<>();
