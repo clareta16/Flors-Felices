@@ -5,81 +5,66 @@ import models.*;
 import connexio.*;
 import excepcions.ProducteNoTrobatBDD;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import static eines.Entrada.*;
 
 public class Menu {
-    private MySqlConnexio connexio;
-    Scanner scanner = new Scanner(System.in);
-    Floristeria floristeria = new Floristeria("Flors-Felices");
-    String opcionsMenu = "Tria una opció\n" +
-            "1. Crear floristeria\n" +
-            "2. Afegir producte\n" +
-            "3. Retirar producte\n" +
-            "4. Veure estoc\n" +
-            "5. Veure estoc per tipus de producte\n" +
-            "6. Veure valor total estoc\n" +
-            "7. Crear ticket compra (-> seleccionar productes, retirar-los de la bdd, afegir-los al ticket, imprimir ticket)\n" +
-            "8. Mostrar llista de tickets\n" +
-            "9. Veure total vendes\n" +
-            "10. Sortir";
+    private Floristeria floristeria;
+    private String opcionsMenu = "Tria una opció\n" +
+            "1. Afegir producte\n" +
+            "2. Retirar producte\n" +
+            "3. Veure estoc\n" +
+            "4. Veure estoc per tipus de producte\n" +
+            "5. Veure valor total estoc\n" +
+            "6. Crear ticket compra\n" +
+            "7. Mostrar llista de tickets\n" +
+            "8. Veure total vendes\n" +
+            "9. Sortir";
 
-    String opcionsTipusProducte = "Quin és el tipus del producte?\n" +
+    private String opcionsTipusProducte = "Quin és el tipus del producte?\n" +
             "1. Arbre\n" +
             "2. Flor\n" +
             "3. Decoració";
 
-    public Menu() {
-        connexio = MySqlConnexio.getInstance();
+    public Menu(Floristeria floristeria) {
+        this.floristeria = floristeria;
     }
 
     public boolean menuPrincipal()  {
         System.out.println("Benvingut/da al gestor de Floristeries");
-        String preguntaA = opcionsMenu;
-        int opcio = entradaInt(preguntaA);
+        int opcio = entradaInt(opcionsMenu);
         boolean exit = false;
 
         switch (opcio) {
             case 1:
-                // crearFloristeria();
-                break;
-            case 2:
                 // Afegir Producte
-                afegirProducte();
+                floristeria.afegirProducte(dadesProducte());
                 System.out.println("Producte afegit amb èxit");
                 break;
-            case 3:
+            case 2:
                 // Retirar Producte
-                String tipusRetirar = menuTipusProducte();
-                System.out.println("Quin és el nom del producte a retirar?");
-                String nomProducte = scanner.nextLine();
-                try {
-                    if(floristeria.trobarProducte(tipusRetirar, nomProducte)){
-                        retirarProducte(tipusRetirar, nomProducte);
-                        System.out.println("Producte retirat correctament.");
-                    }
-                } catch (ProducteNoTrobatBDD e) {
-                    System.out.println(e.getMessage());
-                }
+                floristeria.retirarProducte(menuTipusProducte(), entradaBuida("Nom del producte?"));
                 break;
-            case 4:
+            case 3:
                 //Imprimir estoc
                 floristeria.veureEstoc();
                 break;
-            case 5:
+            case 4:
                 floristeria.imprimirStockQuantitats();
                 break;
-            case 6:
+            case 5:
                 floristeria.imprimirValorTotal();
                 break;
-            case 7:
-                floristeria.crearTicket();
+            case 6:
+                floristeria.crearTicket(dadesTicket());
                 break;
-            case 8:
+            case 7:
                 floristeria.mostrarLlistaCompresAntigues();
                 break;
-            case 9:
+            case 8:
                 try {
                     floristeria.visualitzarTotalDinersGuanyats();
                 } catch (LlistaTicketsBuidaException e) {
@@ -88,7 +73,7 @@ public class Menu {
 
                 //Veure total vendes
                 break;
-            case 10:
+            case 9:
                 //Sortir
                 System.out.println("Gràcies per fer servir el gestor de floristeria");
                 exit = true;
@@ -98,6 +83,28 @@ public class Menu {
         }
         return exit;
     }
+
+    public String menuTipusProducte() {
+        int opcio = entradaInt(opcionsTipusProducte);
+
+        String tipus = "";
+        switch (opcio) {
+            case 1:
+                tipus = "Arbre";
+                break;
+            case 2:
+                tipus = "Flor";
+                break;
+            case 3:
+                tipus = "Decoració";
+                break;
+            default:
+                System.out.println("Opció no vàlida, torna a escollir");
+        }
+        return tipus;
+    }
+
+
 
     public String[] dadesProducte() {
         String[] dades = new String[4];
@@ -144,46 +151,17 @@ public class Menu {
         return dades;
     }
 
-    public void afegirProducte() {
-        Object objecteAfegir = floristeria.crearProducte(dadesProducte());
-        String tipusAfegir = ((Producte) objecteAfegir).getClass().toString().replace("class models.", "");
-        String sqlAfegir = floristeria.generarSQLAfegirProducte(tipusAfegir, objecteAfegir);
-        connexio.executarSQL(sqlAfegir);
-    }
-
-    public String menuTipusProducte() {
-        String preguntaX = opcionsTipusProducte;
-        int opcio = entradaInt(preguntaX);
-
-        String tipus = "";
-        switch (opcio) {
-            case 1:
-                tipus = "Arbre";
-                break;
-            case 2:
-                tipus = "Flor";
-                break;
-            case 3:
-                tipus = "Decoració";
-                break;
-            default:
-                System.out.println("Opció no vàlida, torna a escollir");
-        }
-        return tipus;
-    }
-
-    public void retirarProducte(String tipus, String nom) {
-        String sqlRetirar = "DELETE FROM Producte WHERE id = (SELECT id FROM (SELECT id FROM Producte WHERE tipus = '" +
-                tipus + "' AND nom = '" + nom + "' LIMIT 1) as subquery)";
-        connexio.executarSQL(sqlRetirar);
-
-    }
-
-    public void run() {
-        boolean exit;
+    public List<String> dadesTicket() {
+        List<String> nomsProductes = new ArrayList<>();
+        Scanner scanner = new Scanner(System.in);
+        boolean afegirMesProductes;
         do {
-            exit = menuPrincipal();
-        } while (!exit);
+            System.out.print("Introdueix el nom del producte: ");
+            nomsProductes.add(scanner.nextLine());
+            System.out.print("Vols afegir més productes? (si/no): ");
+            afegirMesProductes = scanner.nextLine().equalsIgnoreCase("si");
+        } while (afegirMesProductes);
+        return nomsProductes;
     }
 
 }

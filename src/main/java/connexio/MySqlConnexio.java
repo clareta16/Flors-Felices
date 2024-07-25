@@ -110,7 +110,6 @@ public class MySqlConnexio {
         try (Statement statement = getConnexio().createStatement()) {
             if (!sql.isEmpty()) {
                 statement.execute(sql);
-                System.out.println("Executat: " + sql);
             }
         } catch (SQLException e) {
             System.out.println("Error en els comandaments sql: " + e.getMessage());

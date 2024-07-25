@@ -41,7 +41,6 @@ public static int entradaInt(String pregunta) {
                 System.out.println(MISS_ERR_DOUBLE);
             }
         }
-        entrada.nextLine();
         return resposta;
     }
 
@@ -57,7 +56,6 @@ public static int entradaInt(String pregunta) {
                 System.out.println(MISS_ERR_STRING_BUIDA);
             }
         }
-        entrada.nextLine();
         return resposta;
     }
 }

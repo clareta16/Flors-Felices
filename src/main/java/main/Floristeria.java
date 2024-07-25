@@ -5,6 +5,7 @@ import excepcions.LlistaTicketsBuidaException;
 import excepcions.ProducteNoTrobatBDD;
 import factories.*;
 import models.*;
+import static eines.Entrada.*;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -52,6 +53,32 @@ public class Floristeria {
                 break;
         }
         return objecte;
+    }
+
+    public void afegirProducte(String[] dadesProducte) {
+        Object objecteAfegir = crearProducte(dadesProducte);
+        if (objecteAfegir != null){
+            String tipusAfegir = ((Producte) objecteAfegir).getClass().toString().replace("class models.", "");
+            String sqlAfegir = generarSQLAfegirProducte(tipusAfegir, objecteAfegir);
+            connexio.executarSQL(sqlAfegir);
+        }
+    }
+
+    public void retirarProducte(String tipusRetirar, String nomProducte) {
+        try {
+            if(trobarProducte(tipusRetirar, nomProducte)){
+                esborrarProducte(tipusRetirar, nomProducte);
+                System.out.println("Producte retirat correctament.");
+            }
+        } catch (ProducteNoTrobatBDD e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void esborrarProducte(String tipus, String nom) {
+        String sqlRetirar = "DELETE FROM Producte WHERE id = (SELECT id FROM (SELECT id FROM Producte WHERE tipus = '" +
+                tipus + "' AND nom = '" + nom + "' LIMIT 1) as subquery)";
+        connexio.executarSQL(sqlRetirar);
     }
 
     public boolean trobarProducte(String tipus, String nom) throws ProducteNoTrobatBDD {
@@ -116,33 +143,9 @@ public class Floristeria {
         System.out.println("El valor total de la floristeria és: " + valorTotal + " euros.");
     }
 
-    public void crearTicket() {
-        Scanner scanner = new Scanner(System.in);
-
-        // Crear un nou objecte Ticket sense preu total inicialment
+    public void crearTicket(List<String> nomsProductes) {
         Ticket ticket = new Ticket();
-
-        // Llista per emmagatzemar els noms dels productes del ticket
-        List<String> nomsProductes = new ArrayList<>();
-
-        boolean afegirMesProductes;
-        do {
-            // Demanar informació del producte a l'usuari
-            System.out.print("Introdueix el nom del producte: ");
-            String nomProducte = scanner.nextLine();
-
-            // Afegir el nom del producte a la llista
-            nomsProductes.add(nomProducte);
-
-            // Preguntar si vol afegir més productes
-            System.out.print("Vols afegir més productes? (si/no): ");
-            afegirMesProductes = scanner.nextLine().equalsIgnoreCase("si");
-
-        } while (afegirMesProductes);
-
-        // Afegir el ticket amb els productes a la base de dades
         connexio.afegirTicketAmbProductes(ticket, nomsProductes);
-
         System.out.println("Ticket amb múltiples productes afegit amb ID: " + ticket.getId());
     }
 
