@@ -36,10 +36,10 @@ public class Menu {
 
     public boolean menuPrincipal()  {
         System.out.println("Benvingut/da al gestor de Floristeries");
-        System.out.println(opcionsMenu);
-        int opcio = scanner.nextInt();
+        String preguntaA = opcionsMenu;
+        int opcio = entradaInt(preguntaA);
         boolean exit = false;
-        scanner.nextLine(); // Afegit per consumir la nova línia
+
         switch (opcio) {
             case 1:
                 // crearFloristeria();
