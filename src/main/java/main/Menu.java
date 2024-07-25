@@ -1,5 +1,6 @@
 package main;
 
+import excepcions.LlistaTicketsBuidaException;
 import models.*;
 import connexio.*;
 import excepcions.ProducteNoTrobatBDD;
@@ -31,7 +32,7 @@ public class Menu {
         connexio = MySqlConnexio.getInstance();
     }
 
-    public boolean menuPrincipal() {
+    public boolean menuPrincipal()  {
         System.out.println("Benvingut/da al gestor de Floristeries");
         System.out.println(opcionsMenu);
         int opcio = scanner.nextInt();
@@ -77,7 +78,12 @@ public class Menu {
                 //Mostrar llista de tickets
                 break;
             case 9:
-                floristeria.visualitzarTotalDinersGuanyats();
+                try {
+                    floristeria.visualitzarTotalDinersGuanyats();
+                } catch (LlistaTicketsBuidaException e) {
+                    System.out.println(e.getMessage());
+            }
+
                 //Veure total vendes
                 break;
             case 10:
