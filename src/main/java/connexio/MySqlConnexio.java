@@ -119,7 +119,7 @@ public class MySqlConnexio {
 
     public List<Ticket> obtenirTotsElsTickets() {
         List<Ticket> tickets = new ArrayList<>();
-        String sql = "SELECT * FROM tickets";
+        String sql = "SELECT * FROM Ticket";
 
         try (Statement statement = getConnexio().createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
