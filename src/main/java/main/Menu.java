@@ -7,6 +7,8 @@ import excepcions.ProducteNoTrobatBDD;
 
 import java.util.Scanner;
 
+import static eines.Entrada.*;
+
 public class Menu {
     private MySqlConnexio connexio;
     Scanner scanner = new Scanner(System.in);
@@ -100,25 +102,28 @@ public class Menu {
     public String[] dadesProducte() {
         String[] dades = new String[4];
         String tipusAfegir = menuTipusProducte();
-        System.out.println("Quin és el nom del producte?");
-        String nomProducte = scanner.nextLine();
-        System.out.println("Quin és el preu?");
-        double preuProducte = scanner.nextDouble();
+
+        String pregunta1 = "Quin és el nom del producte?";
+        String nomProducte = entradaBuida(pregunta1);
+
+        String pregunta2 = "Quin és el preu?";
+        double preuProducte = entradaDouble(pregunta2);
         Object atribut = null;
+
         switch(tipusAfegir){
-            case "arbre":
-                System.out.println("Quina és l'alçada de l'arbre?");
-                atribut = scanner.nextDouble();
+            case "Arbre":
+                String pregunta3 = "Quina és l'alçada de l'arbre?";
+                atribut = entradaDouble(pregunta3);
                 break;
-            case "flor":
-                System.out.println("Quin és el color de la flor?");
-                atribut = scanner.nextLine();
+            case "Flor":
+                String pregunta4 = "Quin és el color de la flor?";
+                atribut = entradaBuida(pregunta4);
                 break;
-            case "decoració":
-                System.out.println("Quin és el material de la decoració?\n" +
-                        "[1. Fusta o 2. Plàstic]");
-                int opcioMaterial = scanner.nextInt();
-                scanner.nextLine();
+            case "Decoració":
+                String pregunta5 = "Quin és el material de la decoració?\n" +
+                        "[1. Fusta o 2. Plàstic]";
+                int opcioMaterial = entradaInt(pregunta5);
+
                 switch(opcioMaterial) {
                     case 1:
                         atribut = Material.FUSTA;
