@@ -11,8 +11,6 @@ private static final Scanner entrada = new Scanner(System.in);
 private static final String MISS_ERR_INT = "Hi ha un error de format. Escriu un número enter";
 private static final String MISS_ERR_DOUBLE = "Hi ha un error de format. Escriu un número decimal";
 private static final String MISS_ERR_STRING_BUIDA = "Hi ha un error de format. Escriu una paraula";
-private static final String MISS_ERR_ENUM = "Hi ha un error de format. Escriu fusta o plàstic";
-
 
 
 public static int entradaInt(String pregunta) {
@@ -61,23 +59,5 @@ public static int entradaInt(String pregunta) {
         }
         entrada.nextLine();
         return resposta;
-    }
-
-    public static Material entradaEnum(String pregunta) {
-    String resposta = "";
-    Material materialTriat = null;
-        boolean correcte = false;
-        while (!correcte) {
-            System.out.println(pregunta);
-            try {
-                resposta = entrada.nextLine();
-                materialTriat = Material.valueOf(resposta.toUpperCase());
-                correcte = true;
-            } catch (InputMismatchException e){
-                System.out.println(MISS_ERR_ENUM);
-            }
-        }
-        entrada.nextLine();
-        return materialTriat;
     }
 }
