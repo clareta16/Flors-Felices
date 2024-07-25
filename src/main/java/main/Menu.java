@@ -106,15 +106,15 @@ public class Menu {
         double preuProducte = scanner.nextDouble();
         Object atribut = null;
         switch(tipusAfegir){
-            case "arbre":
+            case "Arbre":
                 System.out.println("Quina és l'alçada de l'arbre?");
                 atribut = scanner.nextDouble();
                 break;
-            case "flor":
+            case "Flor":
                 System.out.println("Quin és el color de la flor?");
                 atribut = scanner.nextLine();
                 break;
-            case "decoració":
+            case "Decoració":
                 System.out.println("Quin és el material de la decoració?\n" +
                         "[1. Fusta o 2. Plàstic]");
                 int opcioMaterial = scanner.nextInt();
