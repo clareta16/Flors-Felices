@@ -225,7 +225,7 @@ public class MySqlConnexio {
             try (ResultSet generatedKeys = ticketStatement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     int ticketId = generatedKeys.getInt(1);
-                   // ticket.getId(ticketId);
+                     ticket.setId(ticketId);
 
                     // Inserir cada producte al ticket i retirar-lo del stock
                     for (String nomProducte : nomsProductes) {
