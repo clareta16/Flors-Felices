@@ -82,7 +82,7 @@ public class Menu {
                     floristeria.visualitzarTotalDinersGuanyats();
                 } catch (LlistaTicketsBuidaException e) {
                     System.out.println(e.getMessage());
-            }
+                }
 
                 //Veure total vendes
                 break;
