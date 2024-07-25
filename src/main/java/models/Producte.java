@@ -1,12 +1,17 @@
 package models;
 
 public abstract class Producte {
+    private int id;
     private String nom;
     private double preu;
 
     public Producte(String nom, double preu) {
         this.nom = nom;
         this.preu = preu;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getNom() {
