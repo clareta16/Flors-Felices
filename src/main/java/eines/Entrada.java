@@ -36,6 +36,7 @@ public static int entradaInt(String pregunta) {
             System.out.println(pregunta);
             try {
                 resposta = entrada.nextDouble();
+                entrada.nextLine();
                 correcte = true;
             } catch (InputMismatchException e){
                 System.out.println(MISS_ERR_DOUBLE);

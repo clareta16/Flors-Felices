@@ -96,7 +96,7 @@ public class Menu {
                 tipus = "Flor";
                 break;
             case 3:
-                tipus = "Decoració";
+                tipus = "Decoracio";
                 break;
             default:
                 System.out.println("Opció no vàlida, torna a escollir");
@@ -121,7 +121,7 @@ public class Menu {
             case "Flor":
                 atribut = entradaBuida("Quin és el color de la flor?");
                 break;
-            case "Decoració":
+            case "Decoracio":
                 int opcioMaterial = entradaInt("Quin és el material de la decoració?\n" +
                         "[1. Fusta o 2. Plàstic]");
 

@@ -45,9 +45,9 @@ public class Floristeria {
                 objecte = flor;
                 System.out.println("Flor creada.");
                 break;
-            case "Decoració":
+            case "Decoracio":
                 DecoracioFactory decoracioFactory = new DecoracioFactory();
-                Decoracio decoracio = (Decoracio) decoracioFactory.crearProducte(dades[1], Material.valueOf(dades[3]), Double.parseDouble(dades[2]));
+                Decoracio decoracio = (Decoracio) decoracioFactory.crearProducte(dades[1], String.valueOf(dades[3]), Double.parseDouble(dades[2]));
                 objecte = decoracio;
                 System.out.println("Decoració creada.");
                 break;
