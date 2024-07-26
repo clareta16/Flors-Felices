@@ -29,6 +29,14 @@ public class Floristeria {
         this.connexio = MySqlConnexio.getInstance();
     }
 
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
     public Object crearProducte(String[] dades) {
         Object objecte = null;
         switch (dades[0]) {
@@ -58,9 +66,7 @@ public class Floristeria {
         Object objecteAfegir = crearProducte(dadesProducte);
         if (objecteAfegir != null) {
             String tipusAfegir = ((Producte) objecteAfegir).getClass().toString().replace("class models.", "");
-            System.out.println("Tipus: " + tipusAfegir);
             String sqlAfegir = generarSQLAfegirProducte(tipusAfegir, objecteAfegir);
-            System.out.println("SQL: " + sqlAfegir);
             connexio.executarSQL(sqlAfegir);
         }
     }

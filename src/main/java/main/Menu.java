@@ -32,7 +32,7 @@ public class Menu {
     }
 
     public boolean menuPrincipal() {
-        System.out.println("Benvingut/da al gestor de Floristeries");
+        System.out.println("Gestor de " + floristeria.getNom());
         int opcio = entradaInt(opcionsMenu);
         boolean exit = false;
 
