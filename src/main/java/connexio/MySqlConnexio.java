@@ -99,7 +99,6 @@ public class MySqlConnexio {
                 String command = scanner.next().trim();
                 if (!command.isEmpty()) {
                     statement.execute(command);
-                    System.out.println("Executed: " + command);
                 }
             }
         } catch (FileNotFoundException e) {
