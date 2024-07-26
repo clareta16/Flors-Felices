@@ -2,14 +2,12 @@ package main;
 
 import excepcions.LlistaTicketsBuidaException;
 import models.*;
-import connexio.*;
-import excepcions.ProducteNoTrobatBDD;
+
+import static eines.Entrada.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
-import static eines.Entrada.*;
 
 public class Menu {
     private Floristeria floristeria;

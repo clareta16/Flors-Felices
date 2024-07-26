@@ -5,7 +5,6 @@ import excepcions.LlistaTicketsBuidaException;
 import excepcions.ProducteNoTrobatBDD;
 import factories.*;
 import models.*;
-import static eines.Entrada.*;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -47,7 +46,7 @@ public class Floristeria {
                 break;
             case "Decoracio":
                 DecoracioFactory decoracioFactory = new DecoracioFactory();
-                Decoracio decoracio = (Decoracio) decoracioFactory.crearProducte(dades[1], String.valueOf(dades[3]), Double.parseDouble(dades[2]));
+                Decoracio decoracio = (Decoracio) decoracioFactory.crearProducte(dades[1], Material.valueOf(dades[3]), Double.parseDouble(dades[2]));
                 objecte = decoracio;
                 System.out.println("Decoració creada.");
                 break;
@@ -59,7 +58,9 @@ public class Floristeria {
         Object objecteAfegir = crearProducte(dadesProducte);
         if (objecteAfegir != null){
             String tipusAfegir = ((Producte) objecteAfegir).getClass().toString().replace("class models.", "");
+            System.out.println("Tipus: " + tipusAfegir);
             String sqlAfegir = generarSQLAfegirProducte(tipusAfegir, objecteAfegir);
+            System.out.println("SQL: " + sqlAfegir);
             connexio.executarSQL(sqlAfegir);
         }
     }
@@ -108,7 +109,7 @@ public class Floristeria {
                 Flor flor = (Flor) producte;
                 sql = "INSERT INTO Producte (tipus, nom, preu, atribut) VALUES ('flor', '" + flor.getNom() + "', " + flor.getPreu() + ", 'color " + flor.getColor() + "')";
                 break;
-            case "Decoració":
+            case "Decoracio":
                 Decoracio decoracio = (Decoracio) producte;
                 sql = "INSERT INTO Producte (tipus, nom, preu, atribut) VALUES ('decoració', '" + decoracio.getNom() + "', " + decoracio.getPreu() + ", 'material " + decoracio.getMaterial() + "')";
                 break;
