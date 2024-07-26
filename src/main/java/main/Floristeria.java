@@ -31,7 +31,7 @@ public class Floristeria {
 
     public Object crearProducte(String[] dades) {
         Object objecte = null;
-        switch(dades[0]){
+        switch (dades[0]) {
             case "Arbre":
                 ArbreFactory arbreFactory = new ArbreFactory();
                 Arbre arbre = (Arbre) arbreFactory.crearProducte(dades[1], Double.parseDouble(dades[3]), Double.parseDouble(dades[2]));
@@ -40,7 +40,7 @@ public class Floristeria {
                 break;
             case "Flor":
                 FlorFactory florFactory = new FlorFactory();
-                Flor flor = (Flor) florFactory.crearProducte(dades[1], dades[3] , Double.parseDouble(dades[2]));
+                Flor flor = (Flor) florFactory.crearProducte(dades[1], dades[3], Double.parseDouble(dades[2]));
                 objecte = flor;
                 System.out.println("Flor creada.");
                 break;
@@ -56,7 +56,7 @@ public class Floristeria {
 
     public void afegirProducte(String[] dadesProducte) {
         Object objecteAfegir = crearProducte(dadesProducte);
-        if (objecteAfegir != null){
+        if (objecteAfegir != null) {
             String tipusAfegir = ((Producte) objecteAfegir).getClass().toString().replace("class models.", "");
             System.out.println("Tipus: " + tipusAfegir);
             String sqlAfegir = generarSQLAfegirProducte(tipusAfegir, objecteAfegir);
@@ -67,7 +67,7 @@ public class Floristeria {
 
     public void retirarProducte(String tipusRetirar, String nomProducte) {
         try {
-            if(trobarProducte(tipusRetirar, nomProducte)){
+            if (trobarProducte(tipusRetirar, nomProducte)) {
                 esborrarProducte(tipusRetirar, nomProducte);
                 System.out.println("Producte retirat correctament.");
             }
@@ -87,7 +87,7 @@ public class Floristeria {
         String sqlCheck = "SELECT * FROM Producte WHERE tipus = '" + tipus + "' AND nom = '" + nom + "'";
         try (Statement statement = connexio.getConnexio().createStatement();
              ResultSet resultSet = statement.executeQuery(sqlCheck)) {
-            if(resultSet.next()){
+            if (resultSet.next()) {
                 trobat = true;
             } else {
                 throw new ProducteNoTrobatBDD("El producte no és a la base de dades");
@@ -121,14 +121,18 @@ public class Floristeria {
         String sql = "SELECT * FROM Producte";
         try (Statement statement = connexio.getConnexio().createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
-            System.out.println("Estoc de productes:");
-            while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                String tipus = resultSet.getString("tipus");
-                String nom = resultSet.getString("nom");
-                double preu = resultSet.getDouble("preu");
-                String atribut = resultSet.getString("atribut");
-                System.out.println("ID: " + id + ", Tipus: " + tipus + ", Nom: " + nom + ", Preu: " + preu + ", Atribut: " + atribut);
+            if (!resultSet.isBeforeFirst()) {
+                System.out.println("No hi ha cap producte en estoc");
+            } else {
+                System.out.println("Estoc de productes:");
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    String tipus = resultSet.getString("tipus");
+                    String nom = resultSet.getString("nom");
+                    double preu = resultSet.getDouble("preu");
+                    String atribut = resultSet.getString("atribut");
+                    System.out.println("ID: " + id + ", Tipus: " + tipus + ", Nom: " + nom + ", Preu: " + preu + ", Atribut: " + atribut);
+                }
             }
         } catch (SQLException e) {
             System.out.println("Error en recuperar l'estoc: " + e.getMessage());
@@ -164,7 +168,7 @@ public class Floristeria {
     }
 
     public String visualitzarTotalDinersGuanyats() throws LlistaTicketsBuidaException {
-       Ticket ticket = new Ticket();
+        Ticket ticket = new Ticket();
 
         if (tickets.isEmpty()) {
             throw new LlistaTicketsBuidaException("No hi ha cap ticket a la llista de tickets");

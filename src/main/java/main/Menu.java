@@ -31,7 +31,7 @@ public class Menu {
         this.floristeria = floristeria;
     }
 
-    public boolean menuPrincipal()  {
+    public boolean menuPrincipal() {
         System.out.println("Benvingut/da al gestor de Floristeries");
         int opcio = entradaInt(opcionsMenu);
         boolean exit = false;
@@ -103,7 +103,6 @@ public class Menu {
     }
 
 
-
     public String[] dadesProducte() {
         String[] dades = new String[4];
         String tipusAfegir = menuTipusProducte();
@@ -112,7 +111,7 @@ public class Menu {
         double preuProducte = entradaDouble("Quin és el preu?");
         Object atribut = null;
 
-        switch(tipusAfegir){
+        switch (tipusAfegir) {
             case "Arbre":
                 atribut = entradaDouble("Quina és l'alçada de l'arbre?");
                 break;
@@ -123,7 +122,7 @@ public class Menu {
                 int opcioMaterial = entradaInt("Quin és el material de la decoració?\n" +
                         "[1. Fusta o 2. Plàstic]");
 
-                switch(opcioMaterial) {
+                switch (opcioMaterial) {
                     case 1:
                         atribut = Material.FUSTA;
                         break;
