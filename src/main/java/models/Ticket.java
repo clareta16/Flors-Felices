@@ -58,10 +58,10 @@ public class Ticket {
 
         try (Connection connect = MySqlConnexio.getInstance().getConnexio();
              PreparedStatement statement = connect.prepareStatement(query)) {
-            statement.setInt(1, this.id);
-            statement.setDouble(2, producte.getPreu());
+            statement.setInt(1, this.id); // atribut this.id del ticket
+            statement.setDouble(2, producte.getPreu()); //l'id del producte
 
-            statement.executeUpdate(query);
+            statement.executeUpdate(); // al ser preparedStatement no cal passar-li la query com a paràmetre
 
         } catch (SQLException e) {
             System.out.println("S'ha produit un error a l'intentar guardar el producte " + e.getMessage());
@@ -72,7 +72,7 @@ public class Ticket {
         System.out.println("Ticket de la compra " + ticket.getId());
         System.out.println(ticket.getData());
 
-        String query = "SELECT * FROM producte WHERE ticket_id = ?";
+        String query = "SELECT * FROM TicketProducte WHERE ticket_id = ?";
 
         try (Connection connect = MySqlConnexio.getInstance().getConnexio();
              PreparedStatement statement = connect.prepareStatement(query)) {
