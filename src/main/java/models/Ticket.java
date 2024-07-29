@@ -55,18 +55,17 @@ public class Ticket {
 
     private void guardarProducteTicket(Producte producte) {
         String query = "INSERT INTO TicketProducte (ticket_id, producte_id) VALUES (?, ?)";
-
         try (Connection connect = MySqlConnexio.getInstance().getConnexio();
              PreparedStatement statement = connect.prepareStatement(query)) {
             statement.setInt(1, this.id);
-            statement.setDouble(2, producte.getPreu());
+            statement.setInt(2, producte.getId());  // Això ha de ser getId()
 
-            statement.executeUpdate(query);
-
+            statement.executeUpdate();  // Crida el mètode sense paràmetres
         } catch (SQLException e) {
             System.out.println("S'ha produit un error a l'intentar guardar el producte " + e.getMessage());
         }
     }
+
 
     public void imprimirTicket(Ticket ticket){
         System.out.println("Ticket de la compra " + ticket.getId());

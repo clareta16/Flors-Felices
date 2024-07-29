@@ -57,7 +57,7 @@ public class Menu {
                 floristeria.imprimirValorTotal();
                 break;
             case 6:
-                floristeria.crearTicket(dadesTicket());
+                gestionarCreacioTicket();
                 break;
             case 7:
                 floristeria.mostrarLlistaCompresAntigues();
@@ -142,17 +142,40 @@ public class Menu {
         return dades;
     }
 
-    public List<String> dadesTicket() {
+    private void gestionarCreacioTicket() {
         List<String> nomsProductes = new ArrayList<>();
-        Scanner scanner = new Scanner(System.in);
         boolean afegirMesProductes;
+
         do {
-            System.out.print("Introdueix el nom del producte: ");
-            nomsProductes.add(scanner.nextLine());
-            System.out.print("Vols afegir més productes? (si/no): ");
-            afegirMesProductes = scanner.nextLine().equalsIgnoreCase("si");
+            String nomProducte = obtenirNomProducte();
+            nomsProductes.add(nomProducte);
+
+            afegirMesProductes = demanarSiAfegirMesProductes();
         } while (afegirMesProductes);
-        return nomsProductes;
+
+        floristeria.crearTicket(nomsProductes);
     }
+
+    private String obtenirNomProducte() {
+        return entradaBuida("Introdueix el nom del producte: ");
+    }
+
+    private boolean demanarSiAfegirMesProductes() {
+        String resposta = entradaBuida("Vols afegir més productes? (si/no): ");
+        return resposta.equalsIgnoreCase("si");
+    }
+
+//    public List<String> dadesTicket() {
+//        List<String> nomsProductes = new ArrayList<>();
+//        Scanner scanner = new Scanner(System.in);
+//        boolean afegirMesProductes;
+//        do {
+//            System.out.print("Introdueix el nom del producte: ");
+//            nomsProductes.add(scanner.nextLine());
+//            System.out.print("Vols afegir més productes? (si/no): ");
+//            afegirMesProductes = scanner.nextLine().equalsIgnoreCase("si");
+//        } while (afegirMesProductes);
+//        return nomsProductes;
+//    }
 
 }

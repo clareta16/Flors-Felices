@@ -6,10 +6,7 @@ import excepcions.ProducteNoTrobatBDD;
 import factories.*;
 import models.*;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.*;
 
 public class Floristeria {
@@ -74,7 +71,7 @@ public class Floristeria {
     public void retirarProducte(String tipusRetirar, String nomProducte) {
         try {
             if (trobarProducte(tipusRetirar, nomProducte)) {
-                marcarProducteComVenut(tipusRetirar, nomProducte);
+                marcarProducteVenut(tipusRetirar, nomProducte);
                 System.out.println("Producte retirat correctament.");
             }
         } catch (ProducteNoTrobatBDD e) {
@@ -82,13 +79,7 @@ public class Floristeria {
         }
     }
 
-//    public void esborrarProducte(String tipus, String nom) {
-//        String sqlRetirar = "DELETE FROM Producte WHERE id = (SELECT id FROM (SELECT id FROM Producte WHERE tipus = '" +
-//                tipus + "' AND nom = '" + nom + "' LIMIT 1) as subquery)";
-//        connexio.executarSQL(sqlRetirar);
-//    }
-
-    public void marcarProducteComVenut(String tipus, String nom) {
+    public void marcarProducteVenut(String tipus, String nom) {
         String sqlMarcarVenut = "UPDATE Producte SET venut = TRUE WHERE id = (SELECT id FROM (SELECT id FROM Producte WHERE tipus = '" +
                 tipus + "' AND nom = '" + nom + "' LIMIT 1) as subquery)";
         connexio.executarSQL(sqlMarcarVenut);
@@ -162,9 +153,61 @@ public class Floristeria {
 
     public void crearTicket(List<String> nomsProductes) {
         Ticket ticket = new Ticket();
-        connexio.afegirTicketAmbProductes(ticket, nomsProductes);
-        System.out.println("Ticket amb múltiples productes afegit amb ID: " + ticket.getId());
+        for (String nomProducte : nomsProductes) {
+            Producte producte = obtenirProducteXNom(nomProducte);
+            if (producte != null) {
+                afegirProducteATicket(ticket, producte);
+                marcarProducteComVenut(producte);
+            } else {
+                System.out.println("Producte no trobat: " + nomProducte);
+            }
+        }
+        guardarTicket(ticket);
     }
+
+    private Producte obtenirProducteXNom(String nomProducte) {
+        return MySqlConnexio.getInstance().obtenirProductePerNom(nomProducte);
+    }
+
+    private void afegirProducteATicket(Ticket ticket, Producte producte) {
+        ticket.afegirProducteTicket(producte);
+    }
+
+    private void marcarProducteComVenut(Producte producte) {
+        MySqlConnexio.getInstance().marcarProducteComVenut(producte);
+    }
+
+    private void guardarTicket(Ticket ticket) {
+        MySqlConnexio.getInstance().afegirTicket(ticket);
+    }
+
+//    public void crearTicket(List<String> nomsProductes) {
+//        Ticket ticket = new Ticket();
+//        connexio.afegirTicketAmbProductes(ticket, nomsProductes);
+//        for (String nomProducte : nomsProductes) {
+//            String tipusProducte = obtenirTipusProducte(nomProducte);
+//            if (tipusProducte != null) {
+//                marcarProducteComVenut(tipusProducte, nomProducte);
+//            }
+//        }
+//        System.out.println("Ticket amb múltiples productes afegit amb ID: " + ticket.getId());
+//    }
+
+//    private String obtenirTipusProducte(String nomProducte) {
+//        String sql = "SELECT tipus FROM Producte WHERE nom = ? AND venut = FALSE LIMIT 1";
+//        try (Connection connect = connexio.getConnexio();
+//             PreparedStatement statement = connect.prepareStatement(sql)) {
+//            statement.setString(1, nomProducte);
+//            try (ResultSet resultSet = statement.executeQuery()) {
+//                if (resultSet.next()) {
+//                    return resultSet.getString("tipus");
+//                }
+//            }
+//        } catch (SQLException e) {
+//            System.out.println("Error en obtenir el tipus del producte: " + e.getMessage());
+//        }
+//        return null;
+//    }
 
     public void mostrarLlistaCompresAntigues() {
         List<Ticket> tickets = connexio.obtenirTotsElsTickets();

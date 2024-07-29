@@ -22,6 +22,7 @@ public static int entradaInt(String pregunta) {
                 resposta = entrada.nextInt();
                 correcte = true;
         } catch (InputMismatchException e){
+                entrada.nextLine();
                 System.out.println(MISS_ERR_INT);
         }
     }
@@ -36,12 +37,13 @@ public static int entradaInt(String pregunta) {
             System.out.println(pregunta);
             try {
                 resposta = entrada.nextDouble();
-                entrada.nextLine();
                 correcte = true;
             } catch (InputMismatchException e){
+                entrada.nextLine();
                 System.out.println(MISS_ERR_DOUBLE);
             }
         }
+        entrada.nextLine();
         return resposta;
     }
 
