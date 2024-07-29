@@ -43,6 +43,7 @@ public static int entradaInt(String pregunta) {
                 System.out.println(MISS_ERR_DOUBLE);
             }
         }
+        entrada.nextLine();
         return resposta;
     }
 
