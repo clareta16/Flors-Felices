@@ -6,10 +6,7 @@ import excepcions.ProducteNoTrobatBDD;
 import factories.*;
 import models.*;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.*;
 
 public class Floristeria {
@@ -163,7 +160,29 @@ public class Floristeria {
     public void crearTicket(List<String> nomsProductes) {
         Ticket ticket = new Ticket();
         connexio.afegirTicketAmbProductes(ticket, nomsProductes);
+        for (String nomProducte : nomsProductes) {
+            String tipusProducte = obtenirTipusProducte(nomProducte);
+            if (tipusProducte != null) {
+                marcarProducteComVenut(tipusProducte, nomProducte);
+            }
+        }
         System.out.println("Ticket amb múltiples productes afegit amb ID: " + ticket.getId());
+    }
+
+    private String obtenirTipusProducte(String nomProducte) {
+        String sql = "SELECT tipus FROM Producte WHERE nom = ? AND venut = FALSE LIMIT 1";
+        try (Connection connect = connexio.getConnexio();
+             PreparedStatement statement = connect.prepareStatement(sql)) {
+            statement.setString(1, nomProducte);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getString("tipus");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error en obtenir el tipus del producte: " + e.getMessage());
+        }
+        return null;
     }
 
     public void mostrarLlistaCompresAntigues() {

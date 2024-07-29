@@ -40,6 +40,11 @@ public abstract class Producte {
         this.venut = venut;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+
     public abstract String caracteristiquesProducte();
 
 
