@@ -44,6 +44,10 @@ public class Ticket {
         return preuTotal;
     }
 
+    public void setPreuTotal(double preuTotal) {
+        this.preuTotal = preuTotal;
+    }
+
     public List<Producte> getProductesTicket() {
         return productesTicket;
     }

@@ -40,7 +40,6 @@ public class Menu {
             case 1:
                 // Afegir Producte
                 floristeria.afegirProducte(dadesProducte());
-                System.out.println("Producte afegit amb èxit");
                 break;
             case 2:
                 // Retirar Producte

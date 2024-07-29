@@ -58,9 +58,7 @@ public class MySqlConnexio {
     private void connectarMySql() {
         try {
             connexio = DriverManager.getConnection(URL + "/" + BASEDADES + "?useSSL=true", USUARI, CONTRASENYA);
-            System.out.println("Connectat a la base de dades");
             String camiContentRoot = "src" + File.separator + "main" + File.separator + "java" + File.separator + "connexio" + File.separator + "crearBDD.txt";
-//            Paths path = Paths.get(camiContentRoot);
             if (!hiHaTaules()) {
                 executarSQLdArxiu(camiContentRoot);
             }

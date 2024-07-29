@@ -63,7 +63,9 @@ public class Floristeria {
         Object objecteAfegir = crearProducte(dadesProducte);
         if (objecteAfegir != null) {
             String tipusAfegir = ((Producte) objecteAfegir).getClass().toString().replace("class models.", "");
+            System.out.println("Tipus: " + tipusAfegir);
             String sqlAfegir = generarSQLAfegirProducte(tipusAfegir, objecteAfegir);
+            System.out.println("SQL: " + sqlAfegir);
             connexio.executarSQL(sqlAfegir);
         }
     }
@@ -103,18 +105,18 @@ public class Floristeria {
 
     public String generarSQLAfegirProducte(String tipus, Object producte) {
         String sql = "";
-        switch (tipus) {
-            case "Arbre":
+        switch (tipus.toLowerCase()) {
+            case "arbre":
                 Arbre arbre = (Arbre) producte;
                 sql = "INSERT INTO Producte (tipus, nom, preu, atribut) VALUES ('arbre', '" + arbre.getNom() + "', " + arbre.getPreu() + ", 'alçada " + arbre.getAlcadaCm() + "cm')";
                 break;
-            case "Flor":
+            case "flor":
                 Flor flor = (Flor) producte;
                 sql = "INSERT INTO Producte (tipus, nom, preu, atribut) VALUES ('flor', '" + flor.getNom() + "', " + flor.getPreu() + ", 'color " + flor.getColor() + "')";
                 break;
-            case "Decoracio":
+            case "decoracio":
                 Decoracio decoracio = (Decoracio) producte;
-                sql = "INSERT INTO Producte (tipus, nom, preu, atribut) VALUES ('decoració', '" + decoracio.getNom() + "', " + decoracio.getPreu() + ", 'material " + decoracio.getMaterial() + "')";
+                sql = "INSERT INTO Producte (tipus, nom, preu, atribut) VALUES ('decoracio', '" + decoracio.getNom() + "', " + decoracio.getPreu() + ", 'material " + decoracio.getMaterial() + "')";
                 break;
         }
         return sql;
@@ -154,17 +156,19 @@ public class Floristeria {
     public void crearTicket(List<String> nomsProductes) {
         Ticket ticket = new Ticket();
         guardarTicket(ticket);  // Guarda el ticket primer per obtenir el seu ID
-
+        double totalPreuTicket = 0;
         for (String nomProducte : nomsProductes) {
             Producte producte = obtenirProducteXNom(nomProducte);
             if (producte != null) {
                 afegirProducteATicket(ticket, producte);
                 marcarProducteComVenut(producte);
+                totalPreuTicket += producte.getPreu();
             } else {
                 System.out.println("Producte no trobat: " + nomProducte);
             }
         }
-        guardarTicket(ticket);
+        ticket.setPreuTotal(totalPreuTicket);
+        preuTotalTicketABaseDades(totalPreuTicket, ticket.getId());
     }
 
     private Producte obtenirProducteXNom(String nomProducte) {
@@ -183,6 +187,11 @@ public class Floristeria {
 
     private void guardarTicket(Ticket ticket) {
         MySqlConnexio.getInstance().afegirTicket(ticket);
+    }
+
+    private void preuTotalTicketABaseDades(Double preuTotal, int id) {
+        String sql = "UPDATE Ticket SET total = " + preuTotal + " WHERE id = " + id;
+        MySqlConnexio.getInstance().executarSQL(sql);
     }
 
 //    public void crearTicket(List<String> nomsProductes) {
