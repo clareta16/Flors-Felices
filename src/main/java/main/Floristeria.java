@@ -153,6 +153,8 @@ public class Floristeria {
 
     public void crearTicket(List<String> nomsProductes) {
         Ticket ticket = new Ticket();
+        guardarTicket(ticket);  // Guarda el ticket primer per obtenir el seu ID
+
         for (String nomProducte : nomsProductes) {
             Producte producte = obtenirProducteXNom(nomProducte);
             if (producte != null) {
@@ -171,7 +173,9 @@ public class Floristeria {
 
     private void afegirProducteATicket(Ticket ticket, Producte producte) {
         ticket.afegirProducteTicket(producte);
+        MySqlConnexio.getInstance().afegirProducteATicket(ticket.getId(), producte);
     }
+
 
     private void marcarProducteComVenut(Producte producte) {
         MySqlConnexio.getInstance().marcarProducteComVenut(producte);
