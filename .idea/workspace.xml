@@ -4,77 +4,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f110b51e-5ed2-422d-81e4-4f053b8b69c4" name="Changes" comment="V" />
+    <list default="true" id="157b5c6d-44fa-456f-a759-2dd4c7708f0f" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/src/main/java/connexio/MySqlConnexio.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/connexio/MySqlConnexio.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/main/Floristeria.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/main/Floristeria.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/models/Producte.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Producte.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Main.java" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-  </component>
-  <component name="ProjectColorInfo">{
-  &quot;customColor&quot;: &quot;&quot;,
-  &quot;associatedIndex&quot;: 2
-}</component>
-  <component name="ProjectId" id="2jdy7Gyg3T488duTmuoP6mN0D1K" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
-  <component name="ProjectViewState">
-    <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showLibraryContents" value="true" />
-  </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Application.Main.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "feature/problems",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/arnal/IdeaProjects/MurderMystery",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "preferences.lookFeel"
+    "git-widget-placeholder": "dev"
   }
 }]]></component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\arnal\IdeaProjects\Flors-Felices\src\main\java" />
-    </key>
-  </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
-    <task active="true" id="Default" summary="Default task">
-      <changelist id="f110b51e-5ed2-422d-81e4-4f053b8b69c4" name="Changes" comment="" />
-      <created>1721731080243</created>
-      <option name="number" value="Default" />
-      <option name="presentableId" value="Default" />
-      <updated>1721731080243</updated>
-    </task>
-    <task id="LOCAL-00001" summary="V">
-      <option name="closed" value="true" />
-      <created>1722104867444</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1722104867444</updated>
-    </task>
-    <option name="localTasksCounter" value="2" />
     <servers />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="V" />
-    <option name="LAST_COMMIT_MESSAGE" value="V" />
   </component>
 </project>
