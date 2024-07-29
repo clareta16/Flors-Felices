@@ -14,13 +14,11 @@ import java.util.List;
 public class Ticket {
     private int id;
     private LocalDate data;
-    private LocalTime hora;
     private double preuTotal;
     private List<Producte> productesTicket;
 
     public Ticket() {
         this.data = LocalDate.now();
-        this.hora = LocalTime.now();
         this.productesTicket = new ArrayList<>();
     }
 
@@ -34,10 +32,6 @@ public class Ticket {
 
     public LocalDate getData() {
         return this.data;
-    }
-
-    public LocalTime getHora() {
-        return this.hora;
     }
 
     public double getPreuTotal() {
@@ -75,7 +69,7 @@ public class Ticket {
         System.out.println("Ticket de la compra " + ticket.getId());
         System.out.println(ticket.getData());
 
-        String query = "SELECT * FROM producte WHERE ticket_id = ?";
+        String query = "SELECT * FROM producte WHERE id = ?";
 
         try (Connection connect = MySqlConnexio.getInstance().getConnexio();
              PreparedStatement statement = connect.prepareStatement(query)) {
@@ -97,7 +91,7 @@ public class Ticket {
     public double calcularTotal(){
         double total = 0.0;
 
-        String query = "SELECT SUM(preu) AS total FROM producte WHERE ticket_id = ?";
+        String query = "SELECT SUM(preu) AS total FROM producte WHERE id = ?";
 
         try (Connection connect = MySqlConnexio.getInstance().getConnexio();
              PreparedStatement statement = connect.prepareStatement(query)) {
@@ -108,7 +102,7 @@ public class Ticket {
                 total = resultat.getDouble("total");
             }
         } catch (SQLException e) {
-            System.out.println("Error al calcular el total " + e.getMessage());
+            System.out.println("Error en calcular el total " + e.getMessage());
         }
         return total;
     }

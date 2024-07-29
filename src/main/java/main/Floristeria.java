@@ -66,7 +66,7 @@ public class Floristeria {
             System.out.println("Tipus: " + tipusAfegir);
             String sqlAfegir = generarSQLAfegirProducte(tipusAfegir, objecteAfegir);
             System.out.println("SQL: " + sqlAfegir);
-            connexio.executarSQL(sqlAfegir);
+            MySqlConnexio.getInstance().executarSQL(sqlAfegir);
         }
     }
 
@@ -84,13 +84,13 @@ public class Floristeria {
     public void marcarProducteVenut(String tipus, String nom) {
         String sqlMarcarVenut = "UPDATE Producte SET venut = TRUE WHERE id = (SELECT id FROM (SELECT id FROM Producte WHERE tipus = '" +
                 tipus + "' AND nom = '" + nom + "' LIMIT 1) as subquery)";
-        connexio.executarSQL(sqlMarcarVenut);
+        MySqlConnexio.getInstance().executarSQL(sqlMarcarVenut);
     }
 
     public boolean trobarProducte(String tipus, String nom) throws ProducteNoTrobatBDD {
         boolean trobat = false;
         String sqlCheck = "SELECT * FROM Producte WHERE tipus = '" + tipus + "' AND nom = '" + nom + "' AND venut = FALSE";
-        try (Statement statement = connexio.getConnexio().createStatement();
+        try (Statement statement = MySqlConnexio.getInstance().getConnexio().createStatement();
              ResultSet resultSet = statement.executeQuery(sqlCheck)) {
             if (resultSet.next()) {
                 trobat = true;
@@ -124,7 +124,7 @@ public class Floristeria {
 
     public void veureEstoc() {
         String sql = "SELECT * FROM Producte WHERE venut = FALSE";
-        try (Statement statement = connexio.getConnexio().createStatement();
+        try (Statement statement = MySqlConnexio.getInstance().getConnexio().createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
             if (!resultSet.isBeforeFirst()) {
                 System.out.println("No hi ha cap producte en estoc");
@@ -145,11 +145,11 @@ public class Floristeria {
     }
 
     public void imprimirStockQuantitats() {
-        connexio.imprimirStock();
+        MySqlConnexio.getInstance().imprimirStock();
     }
 
     public void imprimirValorTotal() {
-        double valorTotal = connexio.obtenirValorTotalFloristeria();
+        double valorTotal = MySqlConnexio.getInstance().obtenirValorTotalFloristeria();
         System.out.println("El valor total de la floristeria és: " + valorTotal + " euros.");
     }
 
@@ -194,44 +194,14 @@ public class Floristeria {
         MySqlConnexio.getInstance().executarSQL(sql);
     }
 
-//    public void crearTicket(List<String> nomsProductes) {
-//        Ticket ticket = new Ticket();
-//        connexio.afegirTicketAmbProductes(ticket, nomsProductes);
-//        for (String nomProducte : nomsProductes) {
-//            String tipusProducte = obtenirTipusProducte(nomProducte);
-//            if (tipusProducte != null) {
-//                marcarProducteComVenut(tipusProducte, nomProducte);
-//            }
-//        }
-//        System.out.println("Ticket amb múltiples productes afegit amb ID: " + ticket.getId());
-//    }
-
-//    private String obtenirTipusProducte(String nomProducte) {
-//        String sql = "SELECT tipus FROM Producte WHERE nom = ? AND venut = FALSE LIMIT 1";
-//        try (Connection connect = connexio.getConnexio();
-//             PreparedStatement statement = connect.prepareStatement(sql)) {
-//            statement.setString(1, nomProducte);
-//            try (ResultSet resultSet = statement.executeQuery()) {
-//                if (resultSet.next()) {
-//                    return resultSet.getString("tipus");
-//                }
-//            }
-//        } catch (SQLException e) {
-//            System.out.println("Error en obtenir el tipus del producte: " + e.getMessage());
-//        }
-//        return null;
-//    }
-
     public void mostrarLlistaCompresAntigues() {
-        List<Ticket> tickets = connexio.obtenirTotsElsTickets();
+//        String tickets = MySqlConnexio.getInstance().obtenirTotsElsTickets();
+        MySqlConnexio.getInstance().obtenirTotsElsTickets();
 
         if (tickets.isEmpty()) {
             System.out.println("No hi ha tickets emmagatzemats.");
         } else {
-            for (Ticket ticket : tickets) {
-                ticket.imprimirTicket(ticket);
-                System.out.println();  // Espai per separar els tickets
-            }
+            System.out.println(tickets);
         }
     }
 

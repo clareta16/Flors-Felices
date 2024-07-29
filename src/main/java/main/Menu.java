@@ -164,17 +164,4 @@ public class Menu {
         return resposta.equalsIgnoreCase("si");
     }
 
-//    public List<String> dadesTicket() {
-//        List<String> nomsProductes = new ArrayList<>();
-//        Scanner scanner = new Scanner(System.in);
-//        boolean afegirMesProductes;
-//        do {
-//            System.out.print("Introdueix el nom del producte: ");
-//            nomsProductes.add(scanner.nextLine());
-//            System.out.print("Vols afegir més productes? (si/no): ");
-//            afegirMesProductes = scanner.nextLine().equalsIgnoreCase("si");
-//        } while (afegirMesProductes);
-//        return nomsProductes;
-//    }
-
 }
