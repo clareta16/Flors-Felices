@@ -26,6 +26,7 @@ public static int entradaInt(String pregunta) {
                 System.out.println(MISS_ERR_INT);
         }
     }
+    entrada.nextLine();
     return resposta;
 }
 
