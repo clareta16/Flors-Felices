@@ -17,6 +17,6 @@ public class Flor extends Producte {
     }
 
     public String caracteristiquesProducte() {
-        return "Flor: " + super.getNom() + ", color: " + this.color + ", " + super.getPreu() + "€";
+        return "Flor: " + super.getNom() + ", color: " + this.color + ", " + super.getPreu() + "€. En estoc: " + super.isVenut();
     }
 }

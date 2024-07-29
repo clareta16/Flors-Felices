@@ -4,10 +4,12 @@ public abstract class Producte {
     private int id;
     private String nom;
     private double preu;
+    private boolean venut;
 
     public Producte(String nom, double preu) {
         this.nom = nom;
         this.preu = preu;
+        this.venut = false;
     }
 
     public int getId() {
@@ -28,6 +30,14 @@ public abstract class Producte {
 
     public void setPreu(double preu) {
         this.preu = preu;
+    }
+
+    public boolean isVenut() {
+        return venut;
+    }
+
+    public void setVenut(boolean venut) {
+        this.venut = venut;
     }
 
     public abstract String caracteristiquesProducte();

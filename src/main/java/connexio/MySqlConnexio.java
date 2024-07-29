@@ -147,51 +147,66 @@ public class MySqlConnexio {
             List<String> decoracions = new ArrayList<>();
 
             while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                String tipus = resultSet.getString("tipus");
-                String nom = resultSet.getString("nom");
-                double preu = resultSet.getDouble("preu");
-                String atribut = resultSet.getString("atribut");
+                boolean venut = resultSet.getBoolean("venut");
+                if (!venut) {
+                    int id = resultSet.getInt("id");
+                    String tipus = resultSet.getString("tipus");
+                    String nom = resultSet.getString("nom");
+                    double preu = resultSet.getDouble("preu");
+                    String atribut = resultSet.getString("atribut");
 
-                String producteInfo = "ID: " + id + ", Nom: " + nom + ", Preu: " + preu + ", Atribut: " + atribut;
+                    String producteInfo = "ID: " + id + ", Nom: " + nom + ", Preu: " + preu + ", Atribut: " + atribut;
 
-                switch (tipus.toLowerCase()) {
-                    case "arbre":
-                        arbres.add(producteInfo);
-                        break;
-                    case "flor":
-                        flors.add(producteInfo);
-                        break;
-                    case "decoració":
-                        decoracions.add(producteInfo);
-                        break;
-                    default:
-                        System.out.println("Tipus de producte desconegut: " + tipus);
+                    switch (tipus.toLowerCase()) {
+                        case "arbre":
+                            arbres.add(producteInfo);
+                            break;
+                        case "flor":
+                            flors.add(producteInfo);
+                            break;
+                        case "decoració":
+                            decoracions.add(producteInfo);
+                            break;
+                        default:
+                            System.out.println("Tipus de producte desconegut: " + tipus);
+                    }
                 }
+
             }
 
             System.out.println("Arbres:");
-            for (String arbre : arbres) {
-                System.out.println(arbre);
+            if (arbres.isEmpty()) {
+                System.out.println("No hi ha cap arbre en estoc.");
+            } else {
+                for (String arbre : arbres) {
+                    System.out.println(arbre);
+                }
             }
 
             System.out.println("\nFlors:");
-            for (String flor : flors) {
-                System.out.println(flor);
+            if (flors.isEmpty()) {
+                System.out.println("No hi ha cap flor en estoc.");
+            } else {
+                for (String flor : flors) {
+                    System.out.println(flor);
+                }
             }
 
             System.out.println("\nDecoracions:");
-            for (String decoracio : decoracions) {
-                System.out.println(decoracio);
+            if (decoracions.isEmpty()) {
+                System.out.println("No hi ha cap decoració en estoc.");
+            } else {
+                for (String decoracio : decoracions) {
+                    System.out.println(decoracio);
+                }
             }
-
         } catch (SQLException e) {
             System.out.println("Error en recuperar els productes: " + e.getMessage());
         }
     }
 
     public double obtenirValorTotalFloristeria() {
-        String sql = "SELECT SUM(preu) AS valor_total FROM Producte";
+        String sql = "SELECT SUM(preu) AS valor_total FROM Producte WHERE venut = FALSE";
         double valorTotal = 0;
 
         try (Statement statement = getConnexio().createStatement();
@@ -225,7 +240,7 @@ public class MySqlConnexio {
             try (ResultSet generatedKeys = ticketStatement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     int ticketId = generatedKeys.getInt(1);
-                     ticket.setId(ticketId);
+                    ticket.setId(ticketId);
 
                     // Inserir cada producte al ticket i retirar-lo del stock
                     for (String nomProducte : nomsProductes) {

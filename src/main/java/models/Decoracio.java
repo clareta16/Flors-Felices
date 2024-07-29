@@ -17,6 +17,6 @@ public class Decoracio extends Producte {
     }
 
     public String caracteristiquesProducte() {
-        return "Decoracio: " + super.getNom() + ", material: " + this.material + ", " + super.getPreu() + "€";
+        return "Decoracio: " + super.getNom() + ", material: " + this.material + ", " + super.getPreu() + "€. En estoc: " + super.isVenut();
     }
 }

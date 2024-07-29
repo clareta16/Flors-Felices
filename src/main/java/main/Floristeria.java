@@ -74,7 +74,7 @@ public class Floristeria {
     public void retirarProducte(String tipusRetirar, String nomProducte) {
         try {
             if (trobarProducte(tipusRetirar, nomProducte)) {
-                esborrarProducte(tipusRetirar, nomProducte);
+                marcarProducteComVenut(tipusRetirar, nomProducte);
                 System.out.println("Producte retirat correctament.");
             }
         } catch (ProducteNoTrobatBDD e) {
@@ -82,15 +82,21 @@ public class Floristeria {
         }
     }
 
-    public void esborrarProducte(String tipus, String nom) {
-        String sqlRetirar = "DELETE FROM Producte WHERE id = (SELECT id FROM (SELECT id FROM Producte WHERE tipus = '" +
+//    public void esborrarProducte(String tipus, String nom) {
+//        String sqlRetirar = "DELETE FROM Producte WHERE id = (SELECT id FROM (SELECT id FROM Producte WHERE tipus = '" +
+//                tipus + "' AND nom = '" + nom + "' LIMIT 1) as subquery)";
+//        connexio.executarSQL(sqlRetirar);
+//    }
+
+    public void marcarProducteComVenut(String tipus, String nom) {
+        String sqlMarcarVenut = "UPDATE Producte SET venut = TRUE WHERE id = (SELECT id FROM (SELECT id FROM Producte WHERE tipus = '" +
                 tipus + "' AND nom = '" + nom + "' LIMIT 1) as subquery)";
-        connexio.executarSQL(sqlRetirar);
+        connexio.executarSQL(sqlMarcarVenut);
     }
 
     public boolean trobarProducte(String tipus, String nom) throws ProducteNoTrobatBDD {
         boolean trobat = false;
-        String sqlCheck = "SELECT * FROM Producte WHERE tipus = '" + tipus + "' AND nom = '" + nom + "'";
+        String sqlCheck = "SELECT * FROM Producte WHERE tipus = '" + tipus + "' AND nom = '" + nom + "' AND venut = FALSE";
         try (Statement statement = connexio.getConnexio().createStatement();
              ResultSet resultSet = statement.executeQuery(sqlCheck)) {
             if (resultSet.next()) {
@@ -124,7 +130,7 @@ public class Floristeria {
     }
 
     public void veureEstoc() {
-        String sql = "SELECT * FROM Producte";
+        String sql = "SELECT * FROM Producte WHERE venut = FALSE";
         try (Statement statement = connexio.getConnexio().createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
             if (!resultSet.isBeforeFirst()) {

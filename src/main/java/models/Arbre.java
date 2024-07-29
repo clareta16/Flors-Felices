@@ -17,7 +17,7 @@ public class Arbre extends Producte {
     }
 
     public String caracteristiquesProducte() {
-        return "Arbre: " + super.getNom() + ", " + alcadaCm + " cm, " + super.getPreu() + "€";
+        return "Arbre: " + super.getNom() + ", " + this.alcadaCm + " cm, " + super.getPreu() + "€. En estoc: " + super.isVenut();
     }
 
 
