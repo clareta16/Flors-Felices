@@ -222,11 +222,13 @@ public class MySqlConnexio {
 
     public void afegirTicketAmbProductes(Ticket ticket, List<String> nomsProductes) {
         String ticketQuery = "INSERT INTO Ticket (data, total) VALUES (?, ?)";
-        String retirarProducteQuery = "DELETE FROM Producte WHERE id = ?";
+        String retirarProducteQuery = "UPDATE Producte SET venut = TRUE WHERE id = ?";
+        String afegirProducteATicketQuery = "INSERT INTO TicketProducte (ticket_id, producte_id) VALUES (?, ?)";
 
         try (Connection connect = getConnexio();
              PreparedStatement ticketStatement = connect.prepareStatement(ticketQuery, Statement.RETURN_GENERATED_KEYS);
-             PreparedStatement retirarProducteStatement = connect.prepareStatement(retirarProducteQuery)) {
+             PreparedStatement retirarProducteStatement = connect.prepareStatement(retirarProducteQuery);
+             PreparedStatement afegirProducteATicketStatement = connect.prepareStatement(afegirProducteATicketQuery)) {
 
             // Desactivar l'auto-commit per començar una transacció
             connect.setAutoCommit(false);
@@ -242,7 +244,7 @@ public class MySqlConnexio {
                     int ticketId = generatedKeys.getInt(1);
                     ticket.setId(ticketId);
 
-                    // Inserir cada producte al ticket i retirar-lo del stock
+                    // Inserir cada producte al ticket i marcar-lo com venut
                     for (String nomProducte : nomsProductes) {
                         // Obtenir el producte pel nom
                         Producte producte = obtenirProductePerNom(nomProducte);
@@ -250,9 +252,14 @@ public class MySqlConnexio {
                             // Afegir producte al ticket
                             ticket.afegirProducteTicket(producte);
 
-                            // Retirar producte del stock
+                            // Marcar producte com venut
                             retirarProducteStatement.setInt(1, producte.getId());
                             retirarProducteStatement.executeUpdate();
+
+                            // Afegir el producte a la taula TicketProducte
+                            afegirProducteATicketStatement.setInt(1, ticketId);
+                            afegirProducteATicketStatement.setInt(2, producte.getId());
+                            afegirProducteATicketStatement.executeUpdate();
                         } else {
                             System.out.println("Producte no trobat: " + nomProducte);
                         }
@@ -276,8 +283,9 @@ public class MySqlConnexio {
         }
     }
 
+
     public Producte obtenirProductePerNom(String nom) {
-        String query = "SELECT * FROM Producte WHERE nom = ? LIMIT 1";
+        String query = "SELECT * FROM Producte WHERE nom = ? AND venut = FALSE LIMIT 1";
         try (Connection connect = getConnexio();
              PreparedStatement statement = connect.prepareStatement(query)) {
             statement.setString(1, nom);
@@ -290,11 +298,17 @@ public class MySqlConnexio {
 
                     switch (tipus.toLowerCase()) {
                         case "arbre":
-                            return new Arbre(nom, Double.parseDouble(atribut), preu);
+                            Arbre arbre = new Arbre(nom, Double.parseDouble(atribut.replace("alçada ", "").replace("cm", "")), preu);
+                            arbre.setId(id);
+                            return arbre;
                         case "flor":
-                            return new Flor(nom, atribut, preu);
+                            Flor flor = new Flor(nom, atribut.replace("color ", ""), preu);
+                            flor.setId(id);
+                            return flor;
                         case "decoracio":
-                            return new Decoracio(nom, Material.valueOf(atribut.toUpperCase()), preu);
+                            Decoracio decoracio = new Decoracio(nom, Material.valueOf(atribut.replace("material ", "").toUpperCase()), preu);
+                            decoracio.setId(id);
+                            return decoracio;
                         default:
                             throw new IllegalArgumentException("Tipus de producte desconegut: " + tipus);
                     }
