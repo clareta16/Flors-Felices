@@ -48,9 +48,9 @@ public class Ticket {
         return productesTicket;
     }
 
-    public void afegirProducteTicket(Producte producte){
-        productesTicket.add(producte);
-        guardarProducteTicket(producte);
+    public void afegirProducteTicket(Producte producte) {
+        this.productesTicket.add(producte);
+        this.preuTotal += producte.getPreu();
     }
 
     private void guardarProducteTicket(Producte producte) {

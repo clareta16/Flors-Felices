@@ -231,12 +231,15 @@ public class MySqlConnexio {
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     ticket.setId(generatedKeys.getInt(1));
+                } else {
+                    throw new SQLException("No s'ha pogut obtenir l'ID generat per al ticket.");
                 }
             }
         } catch (SQLException e) {
             System.out.println("Error en afegir el ticket: " + e.getMessage());
         }
     }
+
 
     public void marcarProducteComVenut(Producte producte) {
         String sql = "UPDATE Producte SET venut = 1 WHERE id = ?";
@@ -390,4 +393,17 @@ public class MySqlConnexio {
 //        }
 //        return null;
 //    }
+
+    public void afegirProducteATicket(int ticketId, Producte producte) {
+        String sql = "INSERT INTO TicketProducte (ticket_id, producte_id) VALUES (?, ?)";
+        try (Connection connect = getConnexio();
+             PreparedStatement statement = connect.prepareStatement(sql)) {
+            statement.setInt(1, ticketId);
+            statement.setInt(2, producte.getId());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Error en afegir el producte al ticket: " + e.getMessage());
+        }
+    }
+
 }
