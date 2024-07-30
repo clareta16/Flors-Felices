@@ -36,15 +36,12 @@ public class Menu {
 
         switch (opcio) {
             case 1:
-                // Afegir Producte
                 floristeria.afegirProducte(dadesProducte());
                 break;
             case 2:
-                // Retirar Producte
                 floristeria.retirarProducte(menuTipusProducte(), entradaBuida("Nom del producte?"));
                 break;
             case 3:
-                //Imprimir estoc
                 floristeria.veureEstoc();
                 break;
             case 4:
@@ -61,16 +58,8 @@ public class Menu {
                 break;
             case 8:
                 floristeria.visualitzarTotalDinersGuanyats();
-//                try {
-//                    floristeria.visualitzarTotalDinersGuanyats();
-//                } catch (LlistaTicketsBuidaException e) {
-//                    System.out.println(e.getMessage());
-//                }
-
-                //Veure total vendes
                 break;
             case 9:
-                //Sortir
                 System.out.println("Gràcies per fer servir el gestor de floristeria");
                 exit = true;
                 break;
