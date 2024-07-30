@@ -1,15 +1,11 @@
 package main;
 
 import connexio.MySqlConnexio;
-import excepcions.LlistaTicketsBuidaException;
 import excepcions.ProducteNoTrobatBDD;
 import factories.*;
 import models.*;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.*;
 
 public class Floristeria {
@@ -67,14 +63,14 @@ public class Floristeria {
         if (objecteAfegir != null) {
             String tipusAfegir = ((Producte) objecteAfegir).getClass().toString().replace("class models.", "");
             String sqlAfegir = generarSQLAfegirProducte(tipusAfegir, objecteAfegir);
-            connexio.executarSQL(sqlAfegir);
+            MySqlConnexio.getInstance().executarSQL(sqlAfegir);
         }
     }
 
     public void retirarProducte(String tipusRetirar, String nomProducte) {
         try {
             if (trobarProducte(tipusRetirar, nomProducte)) {
-                marcarProducteComVenut(tipusRetirar, nomProducte);
+                marcarProducteVenut(tipusRetirar, nomProducte);
                 System.out.println("Producte retirat correctament.");
             }
         } catch (ProducteNoTrobatBDD e) {
@@ -82,22 +78,16 @@ public class Floristeria {
         }
     }
 
-//    public void esborrarProducte(String tipus, String nom) {
-//        String sqlRetirar = "DELETE FROM Producte WHERE id = (SELECT id FROM (SELECT id FROM Producte WHERE tipus = '" +
-//                tipus + "' AND nom = '" + nom + "' LIMIT 1) as subquery)";
-//        connexio.executarSQL(sqlRetirar);
-//    }
-
-    public void marcarProducteComVenut(String tipus, String nom) {
+    public void marcarProducteVenut(String tipus, String nom) {
         String sqlMarcarVenut = "UPDATE Producte SET venut = TRUE WHERE id = (SELECT id FROM (SELECT id FROM Producte WHERE tipus = '" +
                 tipus + "' AND nom = '" + nom + "' LIMIT 1) as subquery)";
-        connexio.executarSQL(sqlMarcarVenut);
+        MySqlConnexio.getInstance().executarSQL(sqlMarcarVenut);
     }
 
     public boolean trobarProducte(String tipus, String nom) throws ProducteNoTrobatBDD {
         boolean trobat = false;
         String sqlCheck = "SELECT * FROM Producte WHERE tipus = '" + tipus + "' AND nom = '" + nom + "' AND venut = FALSE";
-        try (Statement statement = connexio.getConnexio().createStatement();
+        try (Statement statement = MySqlConnexio.getInstance().getConnexio().createStatement();
              ResultSet resultSet = statement.executeQuery(sqlCheck)) {
             if (resultSet.next()) {
                 trobat = true;
@@ -112,18 +102,18 @@ public class Floristeria {
 
     public String generarSQLAfegirProducte(String tipus, Object producte) {
         String sql = "";
-        switch (tipus) {
-            case "Arbre":
+        switch (tipus.toLowerCase()) {
+            case "arbre":
                 Arbre arbre = (Arbre) producte;
                 sql = "INSERT INTO Producte (tipus, nom, preu, atribut) VALUES ('arbre', '" + arbre.getNom() + "', " + arbre.getPreu() + ", 'alçada " + arbre.getAlcadaCm() + "cm')";
                 break;
-            case "Flor":
+            case "flor":
                 Flor flor = (Flor) producte;
                 sql = "INSERT INTO Producte (tipus, nom, preu, atribut) VALUES ('flor', '" + flor.getNom() + "', " + flor.getPreu() + ", 'color " + flor.getColor() + "')";
                 break;
-            case "Decoracio":
+            case "decoracio":
                 Decoracio decoracio = (Decoracio) producte;
-                sql = "INSERT INTO Producte (tipus, nom, preu, atribut) VALUES ('decoració', '" + decoracio.getNom() + "', " + decoracio.getPreu() + ", 'material " + decoracio.getMaterial() + "')";
+                sql = "INSERT INTO Producte (tipus, nom, preu, atribut) VALUES ('decoracio', '" + decoracio.getNom() + "', " + decoracio.getPreu() + ", 'material " + decoracio.getMaterial() + "')";
                 break;
         }
         return sql;
@@ -131,7 +121,7 @@ public class Floristeria {
 
     public void veureEstoc() {
         String sql = "SELECT * FROM Producte WHERE venut = FALSE";
-        try (Statement statement = connexio.getConnexio().createStatement();
+        try (Statement statement = MySqlConnexio.getInstance().getConnexio().createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
             if (!resultSet.isBeforeFirst()) {
                 System.out.println("No hi ha cap producte en estoc");
@@ -152,53 +142,61 @@ public class Floristeria {
     }
 
     public void imprimirStockQuantitats() {
-        connexio.imprimirStock();
+        MySqlConnexio.getInstance().imprimirStock();
     }
 
     public void imprimirValorTotal() {
-        double valorTotal = connexio.obtenirValorTotalFloristeria();
+        double valorTotal = MySqlConnexio.getInstance().obtenirValorTotalFloristeria();
         System.out.println("El valor total de la floristeria és: " + valorTotal + " euros.");
     }
 
     public void crearTicket(List<String> nomsProductes) {
         Ticket ticket = new Ticket();
-        connexio.afegirTicketAmbProductes(ticket, nomsProductes);
-        System.out.println("Ticket amb múltiples productes afegit amb ID: " + ticket.getId());
+        guardarTicket(ticket);  // Guarda el ticket primer per obtenir el seu ID
+        double totalPreuTicket = 0;
+        for (String nomProducte : nomsProductes) {
+            Producte producte = obtenirProducteXNom(nomProducte);
+            if (producte != null) {
+                afegirProducteATicket(ticket, producte);
+                marcarProducteComVenut(producte);
+                totalPreuTicket += producte.getPreu();
+            } else {
+                System.out.println("Producte no trobat: " + nomProducte);
+            }
+        }
+        ticket.setPreuTotal(totalPreuTicket);
+        preuTotalTicketABaseDades(totalPreuTicket, ticket.getId());
+    }
+
+    private Producte obtenirProducteXNom(String nomProducte) {
+        return MySqlConnexio.getInstance().obtenirProductePerNom(nomProducte);
+    }
+
+    private void afegirProducteATicket(Ticket ticket, Producte producte) {
+        ticket.afegirProducteTicket(producte);
+        MySqlConnexio.getInstance().afegirProducteATicket(ticket.getId(), producte);
+    }
+
+
+    private void marcarProducteComVenut(Producte producte) {
+        MySqlConnexio.getInstance().marcarProducteComVenut(producte);
+    }
+
+    private void guardarTicket(Ticket ticket) {
+        MySqlConnexio.getInstance().afegirTicket(ticket);
+    }
+
+    private void preuTotalTicketABaseDades(Double preuTotal, int id) {
+        String sql = "UPDATE Ticket SET total = " + preuTotal + " WHERE id = " + id;
+        MySqlConnexio.getInstance().executarSQL(sql);
     }
 
     public void mostrarLlistaCompresAntigues() {
-        List<Ticket> tickets = connexio.obtenirTotsElsTickets();
-
-        if (tickets.isEmpty()) {
-            System.out.println("No hi ha tickets emmagatzemats.");
-        } else {
-            for (Ticket ticket : tickets) {
-                ticket.imprimirTicket(ticket);
-                System.out.println();  // Espai per separar els tickets
-            }
-        }
+        MySqlConnexio.getInstance().obtenirTotsElsTickets();
     }
 
-    public String visualitzarTotalDinersGuanyats() throws LlistaTicketsBuidaException {
-        Ticket ticket = new Ticket();
-
-        if (tickets.isEmpty()) {
-            throw new LlistaTicketsBuidaException("No hi ha cap ticket a la llista de tickets");
-        }
-
-        String query = "SELECT SUM(preuTotal) AS total FROM tickets";
-
-        try (Connection connect = MySqlConnexio.getInstance().getConnexio();
-             Statement statement = connect.createStatement();
-             ResultSet resultat = statement.executeQuery(query)) {
-
-            if (resultat.next()) {
-                ticket.calcularTotal();
-            }
-        } catch (SQLException e) {
-            System.out.println("Error al calcular el total " + e.getMessage());
-        }
-
-        return "La floristeria Flors Felices ha guanyat en total " + ticket.calcularTotal() + " euros";
+    public void visualitzarTotalDinersGuanyats() {
+        double totalVendes = MySqlConnexio.getInstance().obtenirTotalVendes();
+        System.out.println("Total vendes: " + totalVendes);
     }
 }

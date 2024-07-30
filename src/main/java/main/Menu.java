@@ -1,17 +1,15 @@
 package main;
 
-import excepcions.LlistaTicketsBuidaException;
 import models.*;
 
 import static eines.Entrada.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class Menu {
     private Floristeria floristeria;
-    private String opcionsMenu = "Tria una opció\n" +
+    private final String opcionsMenu = "Tria una opció\n" +
             "1. Afegir producte\n" +
             "2. Retirar producte\n" +
             "3. Veure estoc\n" +
@@ -40,7 +38,6 @@ public class Menu {
             case 1:
                 // Afegir Producte
                 floristeria.afegirProducte(dadesProducte());
-                System.out.println("Producte afegit amb èxit");
                 break;
             case 2:
                 // Retirar Producte
@@ -57,17 +54,18 @@ public class Menu {
                 floristeria.imprimirValorTotal();
                 break;
             case 6:
-                floristeria.crearTicket(dadesTicket());
+                gestionarCreacioTicket();
                 break;
             case 7:
                 floristeria.mostrarLlistaCompresAntigues();
                 break;
             case 8:
-                try {
-                    floristeria.visualitzarTotalDinersGuanyats();
-                } catch (LlistaTicketsBuidaException e) {
-                    System.out.println(e.getMessage());
-                }
+                floristeria.visualitzarTotalDinersGuanyats();
+//                try {
+//                    floristeria.visualitzarTotalDinersGuanyats();
+//                } catch (LlistaTicketsBuidaException e) {
+//                    System.out.println(e.getMessage());
+//                }
 
                 //Veure total vendes
                 break;
@@ -119,19 +117,22 @@ public class Menu {
                 atribut = entradaBuida("Quin és el color de la flor?");
                 break;
             case "Decoracio":
-                int opcioMaterial = entradaInt("Quin és el material de la decoració?\n" +
-                        "[1. Fusta o 2. Plàstic]");
+                int opcioMaterial;
+                do {
+                    opcioMaterial = entradaInt("Quin és el material de la decoració?\n" +
+                            "[1. Fusta o 2. Plàstic]");
+                    switch (opcioMaterial) {
+                        case 1:
+                            atribut = Material.FUSTA;
+                            break;
+                        case 2:
+                            atribut = Material.PLASTIC;
+                            break;
+                        default:
+                            System.out.println("Escull 1 per fusta o 2 per plàstic, siusplau");
+                    }
+                } while (opcioMaterial < 1 || opcioMaterial > 2 );
 
-                switch (opcioMaterial) {
-                    case 1:
-                        atribut = Material.FUSTA;
-                        break;
-                    case 2:
-                        atribut = Material.PLASTIC;
-                        break;
-                    default:
-                        System.out.println("Escull 1 per fusta o 2 per plàstic, siusplau");
-                }
                 break;
         }
         dades[0] = tipusAfegir;
@@ -142,17 +143,27 @@ public class Menu {
         return dades;
     }
 
-    public List<String> dadesTicket() {
+    private void gestionarCreacioTicket() {
         List<String> nomsProductes = new ArrayList<>();
-        Scanner scanner = new Scanner(System.in);
         boolean afegirMesProductes;
+
         do {
-            System.out.print("Introdueix el nom del producte: ");
-            nomsProductes.add(scanner.nextLine());
-            System.out.print("Vols afegir més productes? (si/no): ");
-            afegirMesProductes = scanner.nextLine().equalsIgnoreCase("si");
+            String nomProducte = obtenirNomProducte();
+            nomsProductes.add(nomProducte);
+
+            afegirMesProductes = demanarSiAfegirMesProductes();
         } while (afegirMesProductes);
-        return nomsProductes;
+
+        floristeria.crearTicket(nomsProductes);
+    }
+
+    private String obtenirNomProducte() {
+        return entradaBuida("Introdueix el nom del producte: ");
+    }
+
+    private boolean demanarSiAfegirMesProductes() {
+        String resposta = entradaBuida("Vols afegir més productes? (si/no): ");
+        return resposta.equalsIgnoreCase("si");
     }
 
 }

@@ -14,13 +14,11 @@ import java.util.List;
 public class Ticket {
     private int id;
     private LocalDate data;
-    private LocalTime hora;
     private double preuTotal;
     private List<Producte> productesTicket;
 
     public Ticket() {
         this.data = LocalDate.now();
-        this.hora = LocalTime.now();
         this.productesTicket = new ArrayList<>();
     }
 
@@ -36,43 +34,42 @@ public class Ticket {
         return this.data;
     }
 
-    public LocalTime getHora() {
-        return this.hora;
-    }
-
     public double getPreuTotal() {
         return preuTotal;
+    }
+
+    public void setPreuTotal(double preuTotal) {
+        this.preuTotal = preuTotal;
     }
 
     public List<Producte> getProductesTicket() {
         return productesTicket;
     }
 
-    public void afegirProducteTicket(Producte producte){
-        productesTicket.add(producte);
-        guardarProducteTicket(producte);
+    public void afegirProducteTicket(Producte producte) {
+        this.productesTicket.add(producte);
+        this.preuTotal += producte.getPreu();
     }
 
     private void guardarProducteTicket(Producte producte) {
         String query = "INSERT INTO TicketProducte (ticket_id, producte_id) VALUES (?, ?)";
-
         try (Connection connect = MySqlConnexio.getInstance().getConnexio();
              PreparedStatement statement = connect.prepareStatement(query)) {
             statement.setInt(1, this.id);
-            statement.setDouble(2, producte.getPreu());
+            statement.setInt(2, producte.getId());  // Això ha de ser getId()
 
-            statement.executeUpdate(query);
-
+            statement.executeUpdate();  // Crida el mètode sense paràmetres
         } catch (SQLException e) {
             System.out.println("S'ha produit un error a l'intentar guardar el producte " + e.getMessage());
         }
     }
 
+
     public void imprimirTicket(Ticket ticket){
         System.out.println("Ticket de la compra " + ticket.getId());
         System.out.println(ticket.getData());
 
-        String query = "SELECT * FROM producte WHERE ticket_id = ?";
+        String query = "SELECT * FROM producte WHERE id = ?";
 
         try (Connection connect = MySqlConnexio.getInstance().getConnexio();
              PreparedStatement statement = connect.prepareStatement(query)) {
@@ -94,7 +91,7 @@ public class Ticket {
     public double calcularTotal(){
         double total = 0.0;
 
-        String query = "SELECT SUM(preu) AS total FROM producte WHERE ticket_id = ?";
+        String query = "SELECT SUM(preu) AS total FROM producte WHERE id = ?";
 
         try (Connection connect = MySqlConnexio.getInstance().getConnexio();
              PreparedStatement statement = connect.prepareStatement(query)) {
@@ -105,7 +102,7 @@ public class Ticket {
                 total = resultat.getDouble("total");
             }
         } catch (SQLException e) {
-            System.out.println("Error al calcular el total " + e.getMessage());
+            System.out.println("Error en calcular el total " + e.getMessage());
         }
         return total;
     }
