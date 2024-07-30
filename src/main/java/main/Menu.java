@@ -62,11 +62,12 @@ public class Menu {
                 floristeria.mostrarLlistaCompresAntigues();
                 break;
             case 8:
-                try {
-                    floristeria.visualitzarTotalDinersGuanyats();
-                } catch (LlistaTicketsBuidaException e) {
-                    System.out.println(e.getMessage());
-                }
+                floristeria.visualitzarTotalDinersGuanyats();
+//                try {
+//                    floristeria.visualitzarTotalDinersGuanyats();
+//                } catch (LlistaTicketsBuidaException e) {
+//                    System.out.println(e.getMessage());
+//                }
 
                 //Veure total vendes
                 break;

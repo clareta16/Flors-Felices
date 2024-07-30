@@ -254,6 +254,21 @@ public class MySqlConnexio {
         return valorTotal;
     }
 
+    public double obtenirTotalVendes() {
+        String sql = "SELECT SUM(preu) AS valor_total FROM Producte WHERE venut = TRUE";
+        double valorTotal = 0;
+
+        try (Statement statement = getConnexio().createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+            if (resultSet.next()) {
+                valorTotal = resultSet.getDouble("valor_total");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error en calcular el valor total de vendes de la floristeria: " + e.getMessage());
+        }
+        return valorTotal;
+    }
+
     public void afegirTicket(Ticket ticket) {
         String sql = "INSERT INTO Ticket (data, total) VALUES (?, ?)";
         try (Connection connect = getConnexio();
