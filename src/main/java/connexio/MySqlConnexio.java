@@ -33,6 +33,13 @@ public class MySqlConnexio {
         return connexio;
     }
 
+    public static synchronized MySqlConnexio getInstance() {
+        if (instancia == null) {
+            instancia = new MySqlConnexio();
+        }
+        return instancia;
+    }
+
     private void carregarPropietats() {
         Properties properties = new Properties();
         try (InputStream input = getClass().getClassLoader().getResourceAsStream("db.properties")) {
@@ -79,13 +86,6 @@ public class MySqlConnexio {
             System.out.println("Error en comprovar si hi ha taules: " + e.getMessage());
         }
         return taulesExisteixen;
-    }
-
-    public static synchronized MySqlConnexio getInstance() {
-        if (instancia == null) {
-            instancia = new MySqlConnexio();
-        }
-        return instancia;
     }
 
     public void executarSQLdArxiu(String filePath) {
@@ -197,7 +197,7 @@ public class MySqlConnexio {
                         case "flor":
                             flors.add(producteInfo);
                             break;
-                        case "decoració":
+                        case "decoracio":
                             decoracions.add(producteInfo);
                             break;
                         default:
