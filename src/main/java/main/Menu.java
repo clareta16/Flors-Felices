@@ -117,10 +117,10 @@ public class Menu {
                 atribut = entradaBuida("Quin és el color de la flor?");
                 break;
             case "Decoracio":
-                int opcioMaterial = entradaInt("Quin és el material de la decoració?\n" +
-                        "[1. Fusta o 2. Plàstic]");
-
+                int opcioMaterial;
                 do {
+                    opcioMaterial = entradaInt("Quin és el material de la decoració?\n" +
+                            "[1. Fusta o 2. Plàstic]");
                     switch (opcioMaterial) {
                         case 1:
                             atribut = Material.FUSTA;
@@ -131,7 +131,7 @@ public class Menu {
                         default:
                             System.out.println("Escull 1 per fusta o 2 per plàstic, siusplau");
                     }
-                } while (opcioMaterial <= 1 && opcioMaterial >= 2 );
+                } while (opcioMaterial < 1 || opcioMaterial > 2 );
 
                 break;
         }
