@@ -62,9 +62,7 @@ public class Floristeria {
         Object objecteAfegir = crearProducte(dadesProducte);
         if (objecteAfegir != null) {
             String tipusAfegir = ((Producte) objecteAfegir).getClass().toString().replace("class models.", "");
-            System.out.println("Tipus: " + tipusAfegir);
             String sqlAfegir = generarSQLAfegirProducte(tipusAfegir, objecteAfegir);
-            System.out.println("SQL: " + sqlAfegir);
             MySqlConnexio.getInstance().executarSQL(sqlAfegir);
         }
     }
