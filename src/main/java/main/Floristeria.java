@@ -1,7 +1,6 @@
 package main;
 
 import connexio.MySqlConnexio;
-import excepcions.LlistaTicketsBuidaException;
 import excepcions.ProducteNoTrobatBDD;
 import factories.*;
 import models.*;
@@ -195,7 +194,6 @@ public class Floristeria {
     }
 
     public void mostrarLlistaCompresAntigues() {
-//        String tickets = MySqlConnexio.getInstance().obtenirTotsElsTickets();
         MySqlConnexio.getInstance().obtenirTotsElsTickets();
 
         if (tickets.isEmpty()) {
@@ -209,27 +207,4 @@ public class Floristeria {
         double totalVendes = MySqlConnexio.getInstance().obtenirTotalVendes();
         System.out.println("Total vendes: " + totalVendes);
     }
-
-//    public String visualitzarTotalDinersGuanyats() throws LlistaTicketsBuidaException {
-//        Ticket ticket = new Ticket();
-//
-//        if (tickets.isEmpty()) {
-//            throw new LlistaTicketsBuidaException("No hi ha cap ticket a la llista de tickets");
-//        }
-//
-//        String query = "SELECT SUM(preuTotal) AS total FROM tickets";
-//
-//        try (Connection connect = MySqlConnexio.getInstance().getConnexio();
-//             Statement statement = connect.createStatement();
-//             ResultSet resultat = statement.executeQuery(query)) {
-//
-//            if (resultat.next()) {
-//                ticket.calcularTotal();
-//            }
-//        } catch (SQLException e) {
-//            System.out.println("Error al calcular el total " + e.getMessage());
-//        }
-//
-//        return "La floristeria Flors Felices ha guanyat en total " + ticket.calcularTotal() + " euros";
-//    }
 }

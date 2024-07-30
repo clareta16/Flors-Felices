@@ -3,7 +3,6 @@ package connexio;
 import models.*;
 
 import java.io.*;
-import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -137,9 +136,9 @@ public class MySqlConnexio {
             "tp.producte_id = p.id;";
 
     public void obtenirTotsElsTickets() {
-        String ticket = "";
+        String ticket;
         String liniesTicket = "";
-        String ticketSencer = "";
+        String ticketSencer;
         try (Statement statement = getConnexio().createStatement();
              ResultSet resultSet = statement.executeQuery(sqlQuery)) {
             while (resultSet.next()) {

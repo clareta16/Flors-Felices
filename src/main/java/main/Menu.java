@@ -1,17 +1,15 @@
 package main;
 
-import excepcions.LlistaTicketsBuidaException;
 import models.*;
 
 import static eines.Entrada.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class Menu {
     private Floristeria floristeria;
-    private String opcionsMenu = "Tria una opció\n" +
+    private final String opcionsMenu = "Tria una opció\n" +
             "1. Afegir producte\n" +
             "2. Retirar producte\n" +
             "3. Veure estoc\n" +
