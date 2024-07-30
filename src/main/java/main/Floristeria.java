@@ -195,12 +195,6 @@ public class Floristeria {
 
     public void mostrarLlistaCompresAntigues() {
         MySqlConnexio.getInstance().obtenirTotsElsTickets();
-
-        if (tickets.isEmpty()) {
-            System.out.println("No hi ha tickets emmagatzemats.");
-        } else {
-            System.out.println(tickets);
-        }
     }
 
     public void visualitzarTotalDinersGuanyats() {
