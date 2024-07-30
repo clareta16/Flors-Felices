@@ -197,7 +197,7 @@ public class MySqlConnexio {
                         case "flor":
                             flors.add(producteInfo);
                             break;
-                        case "decoració":
+                        case "decoracio":
                             decoracions.add(producteInfo);
                             break;
                         default:
